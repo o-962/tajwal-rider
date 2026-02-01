@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shared/services/api_services.dart';
+import 'package:shared/core/network/api_client.dart';
 
 bool isPointInPolygon(LatLng point, List<LatLng> polygon) {
   if (polygon.isEmpty) return false;

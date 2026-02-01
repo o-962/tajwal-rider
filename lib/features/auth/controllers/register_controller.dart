@@ -1,64 +1,89 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:shared/core/network/api_client.dart';
+import 'package:shared/core/routing/endpoints.dart';
 import 'package:shared/models/api_response_model.dart';
-import 'package:shared/services/notification_services.dart';
-import 'package:shared/utils/text_controller_utils.dart';
-import 'package:shared/services/api_services.dart';
-import 'package:shared/services/shared_data.dart';
+import 'package:shared/shared/fields/controllers/form_controller.dart';
+import 'package:shared/shared/fields/interfaces/fields.dart';
+import 'package:shared/shared/fields/states/field_state.dart';
+import 'package:shared/shared/fields/validators/required_validator.dart';
+import 'package:shared/shared/services/token_service.dart';
 
 class RegisterController extends GetxController {
-  RxMap inputs = {}.obs;
-  RxBool loading = false.obs;
+  late final FormController form;
+  final RxBool loading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    try {
-      inputs.value = Map.from(SharedData.fields['register']);
-      initializeControllers(inputs.value);
-    } catch (e) {
-      print('error occured');
-      print(SharedData.fields);
-    }
+
+    form.add(
+      FormFieldState(
+        type: FieldInputType.first_name,
+        rules: [RequiredRule('First name is required')],
+      ),
+    );
+
+    form.add(
+      FormFieldState(
+        type: FieldInputType.last_name,
+        rules: [RequiredRule('Last name is required')],
+      ),
+    );
+
+    form.add(
+      FormFieldState(
+        type: FieldInputType.email,
+        rules: [RequiredRule('Email is required')],
+      ),
+    );
+
+    form.add(
+      FormFieldState(
+        type: FieldInputType.phone,
+        rules: [RequiredRule('Phone is required')],
+      ),
+    );
+
+    form.add(
+      FormFieldState(
+        type: FieldInputType.password,
+        rules: [RequiredRule('Password is required')],
+      ),
+    );
   }
 
-  void register() async {
-    loading.value = true;
-    try {
-      Map fields = extractTextFields(inputs);
-      disableAll(inputs);
-      
-      await Future.delayed(Duration(seconds: 3));
-      
-      var request = await ApiServices.dio.post('/auth/register', data: fields);
+  Future<void> register() async {
+    // if (!form.validateAll()) return;
 
-      ApiModel response = request.parsed;
+    // loading.value = true;
 
-      if (response.statusCode == HttpStatus.unprocessableEntity) {
-        // editErrors(inputs, response.errors);
-      }
-      
-      if (response.statusCode == HttpStatus.created) {
-        String? token = response.data!['token'];
-        if (token != null) {
-          // SocketConnectionServices().reconnect(token);
-          SharedData.token = response.data!['token'];
-        }
-      }
-    } catch (e) {
-      NotificationServices.errorOccurred(
-        error: e,
-        message: "error while registering your account",
-        header: "Error :(",
-      );
-    } finally {
-      loading.value = false;
-      enableAll(inputs);
-    }
+    // final response = await ApiServices.dio.post(
+    //   ApiEndpoints.register,
+    //   data: form.toBackendJson(),
+    // );
+
+    // loading.value = false;
+
+    // final ApiModel parsed = response.parsed;
+
+    // if (parsed.errors != null) {
+    //   form.applyServerErrors(parsed.errors!);
+    //   return;
+    // }
+
+    // if (parsed.statusCode == HttpStatus.created) {
+    //   final token = parsed.data?['token']?.toString() ?? '';
+    //   if (token.isNotEmpty) {
+    //     Get.find<TokenService>().token = token;
+    //   }
+    // }
   }
 
-  void validateField(String fieldKey, String value) {
-    validator(value, fieldKey, inputs);
+  @override
+  void onClose() {
+    form.dispose();
+    super.onClose();
   }
 }

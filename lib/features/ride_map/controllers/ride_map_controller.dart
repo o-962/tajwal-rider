@@ -1,17 +1,12 @@
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shared/common/enums.dart';
+import 'package:shared/core/socket/socket_gateway.dart';
 import 'package:shared/models/driver_model.dart';
-import 'package:shared/services/socket_connection_services.dart';
+import 'package:shared/shared/enums/socket_events.dart';
 import 'package:tajwal_rider/common/routes.dart';
-
 class RideMapController extends GetxController {
   final Rx<GoogleMapController?> mapController = Rx<GoogleMapController?>(null);
   final RxBool myLocation = true.obs;
-  final CameraPosition initialPosition = const CameraPosition(
-    target: LatLng(37.7749, -122.4194), // San Francisco
-    zoom: 12,
-  );
 
   var markers = <Marker>{}.obs;
 
@@ -20,8 +15,8 @@ class RideMapController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    SocketConnectionServices.socket.on(
-      SocketEvents.DRIVER_UPDATE_LOCATION.value,
+    SocketGateway.on(
+      SocketEvents.DRIVER_UPDATE_LOCATION,
       (data) {
         print(' Received location update: $data');
         // Backend emits plain { lat, lng, driverId } for location updates
@@ -43,9 +38,9 @@ class RideMapController extends GetxController {
           CameraUpdate.newLatLng(LatLng(lat, lng)),
         );
       },
-    );
-    SocketConnectionServices.socket.emit(SocketEvents.RIDER_INIT.value);
-    SocketConnectionServices.socket.on(SocketEvents.ORDER_DETAILS.value, (
+    );  
+    SocketGateway.emit(SocketEvents.RIDER_INIT);
+    SocketGateway.on(SocketEvents.ORDER_DETAILS, (
       data,
     ) {
       try {
@@ -73,30 +68,16 @@ class RideMapController extends GetxController {
       } catch (e) {
         print('Error parsing order details: $e');
       }
-
-      // else if (apiResponse.code == OrderExistence.no_order.value) {
-      //   if (Get.currentRoute != AppRoutes.pickup) {
-      //     Get.offAllNamed(AppRoutes.pickup);
-      //   }
-      // }
-      // else if (apiResponse.code == OrderExistence.pending.value){
-      //   if (Get.currentRoute != AppRoutes.pending) {
-      //     Get.offAllNamed(AppRoutes.pending);
-      //   }
-      // }
     });
-    SocketConnectionServices.socket.on(SocketEvents.ORDER_STATUS.value, (
+    SocketGateway.on(SocketEvents.ORDER_STATUS, (
       data,
     ) {
-      print(data);
       if(data['new_status'] != null && data['status_code'] == 200){
         if (data['new_status'] == 'completed') {
           if (Get.currentRoute != AppRoutes.rate) {
             Get.offAllNamed(AppRoutes.rate);
           }
         }
-        Get.snackbar('New update', 'Order status updated to be ${data['new_status']}');
-        
       }
     });
   }

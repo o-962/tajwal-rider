@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared/common/enums.dart';
+import 'package:shared/shared/enums/global.dart';
 import 'package:tajwal_rider/features/ride_options/widgets/ride_box_widget.dart';
-import 'package:tajwal_rider/services/ride_services.dart';
+import 'package:tajwal_rider/services/ride/ride_services.dart';
 
 class DeliveryTypeWidget extends StatelessWidget {
 
-  const DeliveryTypeWidget({super.key});
-
+  DeliveryTypeWidget({super.key});
+  RideService rideService = Get.find<RideService>();
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final selectedType = RideServices.ride.deliveryType;
+      final selectedType = rideService.ride.deliveryType;
 
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          spacing: 20,
           children: [
             rideBoxWidget(
               onClick: () {
-                RideServices.ride.deliveryType = DeliveryType.taxi;
+                rideService.ride.deliveryType = DeliveryType.taxi;
               },
               text: 'People',
               image: 'both.webp',
@@ -28,7 +27,7 @@ class DeliveryTypeWidget extends StatelessWidget {
               
             ),
             rideBoxWidget(
-              onClick: () => RideServices.ride.deliveryType = DeliveryType.gifts,
+              onClick: () => rideService.ride.deliveryType = DeliveryType.gifts,
               text: 'Gift',
               image: 'gift.webp',
               isSelected: selectedType == DeliveryType.gifts,

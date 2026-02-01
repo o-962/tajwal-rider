@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "496688598882",
+    "project_id": "tajwal-rider",
+    "storage_bucket": "tajwal-rider.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496688598882:android:e3d569afa8bb88a379663b",
+        "android_client_info": {
+          "package_name": "com.tajwal.rider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjSTcN7KFPr72u34mrmfJUiHXuTQJ8bLY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

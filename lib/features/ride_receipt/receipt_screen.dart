@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tajwal_rider/features/ride_options/controllers/ride_options_controller.dart';
-import 'package:tajwal_rider/features/ride_receipt/controllers/receipt_controller.dart';
-import 'package:tajwal_rider/services/ride_services.dart';
 import 'package:shared/widgets/button_widget.dart';
+import 'package:tajwal_rider/features/ride_receipt/controllers/receipt_controller.dart';
+import 'package:tajwal_rider/services/ride/ride_services.dart';
 
 class ReceiptScreen extends StatelessWidget {
-  const ReceiptScreen({super.key});
+  RideService rideService = Get.find<RideService>();
+  ReceiptScreen({super.key});
 
   Widget _infoRow(String title, String? value) {
     return Padding(
@@ -28,17 +28,22 @@ class ReceiptScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Obx(() {
-          final ride = RideServices.ride;
+          final ride = rideService.ride;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _infoRow('Delivery Type', ride.deliveryType?.name),
+              if (ride.deliveryType != null)
+                Column(
+                  children: [
+                    _infoRow('Delivery Type', ride.deliveryType?.name),
+                    _infoRow('Driver Gender', ride.driverGender?.name),
+                    _infoRow('Passengers Gender', ride.passengersGender?.name),
+                    _infoRow('Male Passengers', ride.male.toString()),
+                    _infoRow('Female Passengers', ride.female.toString()),
+                  ],
+                ),
               _infoRow('Gift Type', ride.giftType?.name),
-              _infoRow('Driver Gender', ride.driverGender?.name),
-              _infoRow('Passengers Gender', ride.passengersGender?.name),
-              _infoRow('Male Passengers', ride.male.toString()),
-              _infoRow('Female Passengers', ride.female.toString()),
               const SizedBox(height: 20),
               _infoRow('Pickup Location', ride.pickupLocation),
               _infoRow('Pickup Lat', ride.pickupLat.toString()),
@@ -48,8 +53,8 @@ class ReceiptScreen extends StatelessWidget {
               _infoRow('Dropoff Lat', ride.dropoffLat.toString()),
               _infoRow('Dropoff Lng', ride.dropoffLng.toString()),
               const SizedBox(height: 40),
-              _infoRow('price', RideOptionsController.cost.value.toString()),
-              buttonWidget(text: 'send', onTap: ReceiptController().submit)
+              _infoRow('price', ride.cost.toString()),
+              buttonWidget(text: 'send', onTap: ReceiptController().submit),
             ],
           );
         }),

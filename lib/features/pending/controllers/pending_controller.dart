@@ -1,24 +1,21 @@
 import 'package:get/get.dart';
-import 'package:shared/common/enums.dart';
-import 'package:shared/services/socket_connection_services.dart';
+import 'package:shared/core/socket/socket_gateway.dart';
+import 'package:shared/shared/enums/socket_events.dart';
 import 'package:tajwal_rider/common/routes.dart';
 
 class PendingController {
 
   void waitingForAcceptance(){
-    SocketConnectionServices.socket.emit(SocketEvents.RIDER_INIT.value);
-    SocketConnectionServices.socket.on(
-      SocketEvents.ORDER_ACCEPTED.value,
-      (x) {
-        print('ORDER ACCEPTED');
-        if (Get.currentRoute != AppRoutes.ride_map) {
-          Get.offAllNamed(AppRoutes.ride_map);
+    SocketGateway.emit(SocketEvents.RIDER_INIT);
+    SocketGateway.on( SocketEvents.ORDER_ACCEPTED, (x) {
+        if (Get.currentRoute != AppRoutes.rideMap) {
+          Get.offAllNamed(AppRoutes.rideMap);
         }
       },
     );
   }
 
   void cancelOrder(){
-    SocketConnectionServices.socket.emit(SocketEvents.ORDER_CANCELLED.value);
+    SocketGateway.emit(SocketEvents.ORDER_CANCELLED);
   }
 }

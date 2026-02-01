@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared/common/colors.dart';
-import 'package:shared/common/font_size.dart';
-import 'package:shared/common/media_query.dart';
+import 'package:shared/shared/constants/colors.dart';
+import 'package:shared/shared/constants/font_size.dart';
+import 'package:shared/shared/constants/layout.dart';
 import 'package:shared/widgets/text_widget.dart';
 import 'package:tajwal_rider/utils/ride_utils.dart';
 

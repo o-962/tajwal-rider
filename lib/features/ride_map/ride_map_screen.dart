@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared/shared/constants/map_options.dart';
 import 'package:shared/widgets/sheet_widget.dart';
 import 'package:shared/widgets/spinner_widget.dart';
 import 'package:tajwal_rider/features/ride_map/controllers/ride_map_controller.dart';
@@ -17,8 +18,8 @@ class RideMapScreen extends StatelessWidget {
           Obx(
             () => GoogleMap(
               initialCameraPosition: CameraPosition(
-                target: LatLng(31.95, 35.91),
-                zoom: 8,
+                target: MapOptions.initialPosition,
+                zoom: MapOptions.cameraZoom,
               ),
               onMapCreated: controller.onMapCreated,
               myLocationEnabled: controller.myLocation.value,

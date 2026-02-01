@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared/widgets/text_widget.dart';
 import 'package:tajwal_rider/features/ride_options/controllers/ride_options_controller.dart';
 import 'package:tajwal_rider/features/ride_options/widgets/ride_box_widget.dart';
-import 'package:tajwal_rider/services/ride_services.dart';
-import 'package:shared/widgets/text_widget.dart';
+import 'package:tajwal_rider/services/ride/ride_services.dart';
 
 class UserGenderWidget extends StatelessWidget {
-  const UserGenderWidget({super.key});
+  UserGenderWidget({super.key});
 
-  
+  RideService rideService = Get.find<RideService>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +26,19 @@ class UserGenderWidget extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: Icon(Icons.add),
-                    onPressed: () => RideOptionsController().addGender('female'),
+                    onPressed: () => rideService.incrementFemale(),
                   ),
                   textWidget(
-                    "${RideServices.ride.female}",
+                    "${rideService.ride.female}",
                   ),
                   IconButton(
                     icon: Icon(Icons.remove),
-                    onPressed: () => RideOptionsController().removeGender('female'),
+                    
+                    onPressed: () => rideService.decrementFemale(),
                   ),
                 ],
               ),
             ),
-            SizedBox(width: 20),
             rideBoxWidget(
               onClick: () {},
               text: 'Males',
@@ -47,14 +47,14 @@ class UserGenderWidget extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: Icon(Icons.add),
-                    onPressed: () => RideOptionsController().addGender('male'),
+                    onPressed: () => rideService.incrementMale(),
                   ),
                   textWidget(
-                    "${RideServices.ride.male}",
+                    "${rideService.ride.male}",
                   ),
                   IconButton(
                     icon: Icon(Icons.remove),
-                    onPressed: () => RideOptionsController().removeGender('male'),
+                    onPressed: () => rideService.decrementMale(),
                   ),
                 ],
               ),

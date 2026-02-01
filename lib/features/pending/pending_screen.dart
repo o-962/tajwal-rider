@@ -29,7 +29,7 @@ class PendingScreen extends StatelessWidget {
                 onPressed: () {
                   PendingController().cancelOrder();
                 },
-                child: const Text("LOGOUT"),
+                child: const Text("Cancel order"),
               ),
             ],
           ),

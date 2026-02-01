@@ -1,68 +1,36 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:shared/common/colors.dart';
-import 'package:shared/common/media_query.dart';
-import 'package:shared/models/api_response_model.dart';
-import 'package:shared/services/api_services.dart';
-import 'package:shared/services/shared_data.dart';
-import 'package:shared/services/socket_connection_services.dart';
-import 'package:shared/services/translations_services.dart';
+import 'package:shared/core/bootstrap/app_bootstrap.dart';
+import 'package:shared/shared/constants/colors.dart';
+import 'package:shared/shared/services/translation_service.dart';
 import 'package:tajwal_rider/common/routes.dart';
-import 'package:tajwal_rider/services/ride_services.dart';
-import 'package:shared/utils/app_utils.dart';
-import 'package:tajwal_rider/utils/init_utils.dart';
+import 'package:tajwal_rider/core/firebase/firebase_options.dart';
+
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('BG msg: ${message.messageId} | ${message.data}');
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-
-  await dotenv.load(fileName: ".env");
-  await GetStorage.init();
-
-  Get.put(RideServices());
-
-  String initialRoute = AppRoutes.error;
-  try {
-    ApiModel init = await ApiServices(role: 'user').appInit();
-    String initRoute = initUtils(init);
-    if (initRoute == AppRoutes.error) {
-      print('error with api');
-    }
-    if (initRoute != AppRoutes.error) {
-      await SocketConnectionServices.start();
-
-      if (SocketConnectionServices.isConnected()) {
-        print('connected to socket');
-      }
-      initialRoute = SocketConnectionServices.isConnected() ? initRoute : AppRoutes.error;
-    }
-  } catch (e) {
-    print('❌ App initialization error: $e');
-  }
-
-  print(initialRoute);
-  runApp(MyApp(initialRoute: initialRoute));
+  await Firebase.initializeApp( options: DefaultFirebaseOptions.currentPlatform, );
+  FirebaseMessaging.onBackgroundMessage( firebaseMessagingBackgroundHandler, );
+  await AppBootstrap.start();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final String initialRoute;
-
-  const MyApp({super.key, required this.initialRoute});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    AppSize.init(context);
-    String lang = SharedData.language;
     return GetMaterialApp(
       title: 'Tajwal',
-      translations: AppTranslations(),
-      locale: Locale(lang),
+      translations: TranslationService(),
+      // locale: Locale(lang.language),
+      // textDirection: lang.textDirection,
       fallbackLocale: const Locale('en'),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primary),
@@ -74,11 +42,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       getPages: routes,
       routingCallback: (routing) {},
-      textDirection: textDirectionality(),
-      initialRoute: initialRoute,
-      onReady: () {
-        SharedData.isInitialized = true;
-      },
+      initialRoute: AppRoutes.splashScreen
     );
   }
 }
