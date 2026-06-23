@@ -1,10 +1,11 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:shared/shared/enums/index.dart';
+import 'package:shared/shared/fields/interfaces/fields.dart';
 
 class RidePreferences {
   final Rxn<DeliveryType> _deliveryType = Rxn<DeliveryType>(null);
   final Rxn<GiftType> _giftType = Rxn<GiftType>(null);
-  
+
   final Rxn<Gender> _passengersGender = Rxn<Gender>(null);
   final Rxn<Gender> _driverGender = Rxn<Gender>(null);
 
@@ -17,10 +18,10 @@ class RidePreferences {
   final RxInt _male = 0.obs;
   final RxInt _female = 0.obs;
   final RxNum _cost = RxNum(0);
-
+  final RxBool _canSubmitOrder = false.obs;
+  final RxnString _promoCode = RxnString(null);
   num? get cost => _cost.value;
   set cost(num val) => _cost.value = val;
-
 
   DeliveryType? get deliveryType => _deliveryType.value;
   set deliveryType(DeliveryType? val) => _deliveryType.value = val;
@@ -33,7 +34,6 @@ class RidePreferences {
 
   Gender? get driverGender => _driverGender.value;
   set driverGender(Gender? val) => _driverGender.value = val;
-
 
   String? get pickupLocation => _pickupLocation.value;
   set pickupLocation(String? val) => _pickupLocation.value = val;
@@ -70,10 +70,16 @@ class RidePreferences {
     pickupLng = 0.0;
     dropoffLat = 0.0;
     dropoffLng = 0.0;
+
     male = 0;
     female = 0;
     cost = 0;
+    _promoCode.value = null;
+    _canSubmitOrder.value = false;
   }
+
+  String? get promoCode => _promoCode.value;
+  set promoCode(String? val) => _promoCode.value = val;
 
   void setPickup(String name, double lat, double lng) {
     pickupLocation = name;
@@ -87,8 +93,8 @@ class RidePreferences {
     dropoffLng = lng;
   }
 
-  void setGenderCounts({ int? maleCount, int? femaleCount }) {
-    if (maleCount != null){
+  void setGenderCounts({int? maleCount, int? femaleCount}) {
+    if (maleCount != null) {
       male = maleCount;
     }
     if (femaleCount != null) {
@@ -100,19 +106,26 @@ class RidePreferences {
     driverGender = gender;
   }
 
+  Map<String, dynamic> toJson() {
+    final body = <String, dynamic>{
+      FieldInputType.DELIVERY_TYPE.value: deliveryType?.value,
+      FieldInputType.GIFT_TYPE.value: giftType?.value,
+      FieldInputType.PASSENGERS_GENDER.value: passengersGender?.value,
+      FieldInputType.DRIVER_GENDER.value: driverGender?.value,
+      FieldInputType.PICKUP_LOCATION.value: pickupLocation,
+      FieldInputType.DROPOFF_LOCATION.value: dropoffLocation,
+      FieldInputType.PICKUP_LAT.value: pickupLat,
+      FieldInputType.PICKUP_LNG.value: pickupLng,
+      FieldInputType.DROPOFF_LAT.value: dropoffLat,
+      FieldInputType.DROPOFF_LNG.value: dropoffLng,
+      FieldInputType.MALE.value: male,
+      FieldInputType.FEMALE.value: female,
+      FieldInputType.COST.value: cost,
+      FieldInputType.PROMO_CODE.value: promoCode,
+    };
 
-  Map<String, dynamic> toJson() => {
-    'delivery_type': deliveryType?.name,
-    'gift_type': giftType?.name,
-    'passengers_gender': passengersGender?.name,
-    'driver_gender': driverGender?.name,
-    'pickup_location': pickupLocation,
-    'dropoff_location': dropoffLocation,
-    'pickup_lat': pickupLat,
-    'pickup_lng': pickupLng,
-    'dropoff_lat': dropoffLat,
-    'dropoff_lng': dropoffLng,
-    'male': male,
-    'female': female,
-  };
+
+    return body;
+  }
+
 }

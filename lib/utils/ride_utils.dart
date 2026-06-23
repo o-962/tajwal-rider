@@ -1,6 +1,8 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared/core/crashlytics/crashlytics.dart';
+import 'package:shared/core/env/app_env.dart';
 import 'package:shared/core/network/api_client.dart';
+import 'package:shared/utils/logger.dart';
 
 bool isPointInPolygon(LatLng point, List<LatLng> polygon) {
   if (polygon.isEmpty) return false;
@@ -26,22 +28,29 @@ bool isPointInPolygon(LatLng point, List<LatLng> polygon) {
 }
 
 Future<List<Map<String, dynamic>>> getNearbyPlacesWithDetails(String location) async {
-  final apiKey = dotenv.env['GOOGLE_MAP_API'];
-  final response = await ApiServices.dio.get(
-    'https://maps.googleapis.com/maps/api/place/textsearch/json',
-    queryParameters: {
-      'query': location,
-      'key': apiKey,
-    },
-  );
+  try {
+    final apiKey = AppEnv.googleMapApi;
+    final response = await ApiServices.dio.get(
+      'https://maps.googleapis.com/maps/api/place/textsearch/json',
+      queryParameters: {
+        'query': location,
+        'key': apiKey,
+      },
+    );
 
-  final results = response.data['results'] ?? [];
+    final results = response.data['results'] ?? [];
+    AppLogger.debug('Nearby places fetched successfully for location: $location');
 
-  return results.take(5).map<Map<String, dynamic>>((place) {
-    return {
-      'name': place['name'],
-      'lat': place['geometry']['location']['lat'],
-      'lng': place['geometry']['location']['lng'],
-    };
-  }).toList();
+    return results.take(5).map<Map<String, dynamic>>((place) {
+      return {
+        'name': place['name'],
+        'lat': place['geometry']['location']['lat'],
+        'lng': place['geometry']['location']['lng'],
+      };
+    }).toList();
+  } catch (e, stackTrace) {
+    AppLogger.error('Error fetching nearby places for $location', error: e, stackTrace: stackTrace);
+    Crashlytics().logError(e, stackTrace: stackTrace);
+    return []; // Return empty list on error
+  }
 }

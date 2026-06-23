@@ -1,77 +1,71 @@
-// history_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared/base/base_screen.dart';
+import 'package:shared/widgets/history/empty_history_widget.dart';
+import 'package:tajwal_rider/features/history/trip_details_screen.dart';
+import 'package:tajwal_rider/features/history/widgets/format_utils.dart';
+import 'package:tajwal_rider/features/history/widgets/stat_card_widget.dart';
+import 'package:tajwal_rider/features/history/widgets/trip_card_widget.dart';
+
 import 'controllers/history_controller.dart';
 
-class HistoryScreen extends StatelessWidget {
-  HistoryScreen({super.key});
-
-  final HistoryController controller = Get.put(HistoryController());
+class HistoryScreen extends BaseScreen<HistoryController> {
+  const HistoryScreen({super.key})
+  : super(title: 'trip_history', showLoading: true);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Trip History')),
-      body: Obx(() {
-        final h = controller.history.value;
-        if (h == null || h.orders.isEmpty) {
-          return const Center(child: Text('No history found'));
-        }
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12),
+  Widget builder(HistoryController controller) {
+    return Obx(() {
+      final h = controller.history.value;
+      if (h == null || h.orders.isEmpty) {
+        return EmptyHistoryWidget(
+          title: 'no_history'.tr,
+          subtitle: 'history_empty'.tr,
+        );
+      }
+
+      return CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _summaryItem('Trips', h.totalOrders),
-                  _summaryItem('Total', h.totalCosts),
-                  _summaryItem('Profit', h.totalProfits),
+                  Expanded(
+                    child: StatCardWidget(
+                      icon: Icons.route,
+                      label: 'trips'.tr,
+                      value: h.totalOrders.toString(),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: StatCardWidget(
+                      icon: Icons.account_balance_wallet_outlined,
+                      label: 'total'.tr,
+                      value: formatMoney(h.totalCosts),
+                    ),
+                  ),
                 ],
               ),
             ),
-            const Divider(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: h.orders.length,
-                itemBuilder: (context, i) {
-                  final o = h.orders[i];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${o.pickupLocation} → ${o.dropoffLocation}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          const SizedBox(height: 6),
-                          Text('Cost: ${o.cost}'),
-                          if (o.costDiscounted != null) Text('Discounted: ${o.costDiscounted}'),
-                          Text('Group: ${o.group}'),
-                          const SizedBox(height: 6),
-                          Text('Driver: ${o.driverPhoneNumber}', style: const TextStyle(color: Colors.grey)),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            sliver: SliverList.separated(
+              itemCount: h.orders.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, i) {
+                final o = h.orders[i];
+                return TripCardWidget(
+                  order: o,
+                  onTap: () => Get.to(() => const TripDetailsScreen(), arguments: o),
+                );
+              },
             ),
-          ],
-        );
-      }),
-    );
-  }
-
-  Widget _summaryItem(String label, num value) {
-    return Column(
-      children: [
-        Text(value.toString(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        Text(label, style: const TextStyle(color: Colors.grey)),
-      ],
-    );
+          ),
+        ],
+      );
+    });
   }
 }

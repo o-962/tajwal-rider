@@ -1,5 +1,13 @@
 {
-  "cSpell.words": [
-    "dropoff"
-  ]
+  "cSpell.words": ["dropoff"],
+  "dart.analysisExcludedFolders": ["build", ".dart_tool", "ios", "android"],
+  "dart.lineLength": 120,
+  "dart.analysisServer.vmOptions": "--enable-asserts --old_gen_heap_size=4096",
+  "files.watcherExclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/ios/**": true,
+    "**/android/**": true,
+    "**/node_modules/**": true
+  }
 }

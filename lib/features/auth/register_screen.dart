@@ -1,87 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:shared/shared/constants/index.dart';
+import 'package:shared/base/base_form_screen.dart';
+import 'package:shared/base/base_screen.dart';
+import 'package:shared/shared/constants/colors.dart';
 import 'package:shared/shared/fields/interfaces/fields.dart';
-import 'package:shared/shared/fields/widget/field_input.dart';
-import 'package:shared/widgets/button_widget.dart';
 import 'package:tajwal_rider/features/auth/controllers/register_controller.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
-
-  final RegisterController controller = Get.put(RegisterController());
+class RegisterScreen extends BaseScreen<RegisterController> {
+  const RegisterScreen({super.key})
+  : super(title: 'signup', showLoading: true);
 
   @override
-  Widget build(BuildContext context) {
-    AppSize.init(context);
+  Widget builder(RegisterController controller) {
+    return BaseFormScreen(
+      headerIcon: Icons.person_add,
+      headerTitle: 'create_account',
+      headerDescription: 'sign_up_to_get_started',
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                SizedBox(
-                  height: AppSize.height * 0.5,
-                  width: AppSize.width,
-                  child: Image.asset(
-                    AppAssets.logo,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const Positioned(
-                  bottom: 10,
-                  left: 20,
-                  child: Text(
-                    'Register new account',
-                    style: TextStyle(
-                      color: AppColor.primary,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  FieldInput(
-                    field: controller.form.get(FieldInputType.first_name),
-                  ),
-                  FieldInput(
-                    field: controller.form.get(FieldInputType.last_name),
-                  ),
-                  FieldInput(
-                    field: controller.form.get(FieldInputType.email),
-                  ),
-                  FieldInput(
-                    field: controller.form.get(FieldInputType.phone),
-                  ),
-                  FieldInput(
-                    field: controller.form.get(FieldInputType.password),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            Obx(
-              () => buttonWidget(
-                text: 'Signup',
-                onTap: controller.register,
-                loading: controller.loading.value,
-                loadingText: 'Signing up...',
-              ),
-            ),
-
-            const SizedBox(height: 30),
-          ],
-        ),
-      ),
+      headerIconColor: AppColor.primary,
+      formCardIconColor: AppColor.primary,
+      fields: [
+        controller.form.get(FieldInputType.FIRST_NAME),
+        controller.form.get(FieldInputType.LAST_NAME),
+        controller.form.get(FieldInputType.USER_NAME),
+        controller.form.get(FieldInputType.EMAIL),
+        controller.form.get(FieldInputType.PHONE_NUMBER),
+        controller.form.get(FieldInputType.PASSWORD),
+      ],
+      buttonText: 'signup',
+      onSubmit: controller.register,
+      isLoading: controller.isLoading,
     );
   }
 }

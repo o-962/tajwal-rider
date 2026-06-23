@@ -1,22 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared/core/bootstrap/app_bootstrap.dart';
 import 'package:shared/shared/constants/colors.dart';
+import 'package:shared/shared/constants/layout.dart';
 import 'package:shared/shared/services/translation_service.dart';
+import 'package:tajwal_rider/common/pages.dart';
 import 'package:tajwal_rider/common/routes.dart';
 import 'package:tajwal_rider/core/firebase/firebase_options.dart';
 
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('BG msg: ${message.messageId} | ${message.data}');
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp( options: DefaultFirebaseOptions.currentPlatform, );
-  FirebaseMessaging.onBackgroundMessage( firebaseMessagingBackgroundHandler, );
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await AppBootstrap.start();
   runApp(MyApp());
 }
@@ -24,25 +21,39 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  TranslationService get _translationService => Get.find<TranslationService>();
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Tajwal',
-      translations: TranslationService(),
-      // locale: Locale(lang.language),
-      // textDirection: lang.textDirection,
+      title: 'app_name'.tr,
+
+      translations: _translationService,
+      locale: Locale(_translationService.lang),
+      textDirection: _translationService.textDirection,
       fallbackLocale: const Locale('en'),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primary),
         fontFamily: 'Rubik',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: AppColor.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          toolbarHeight: 70,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: AppColor.primary,
+            statusBarIconBrightness: Brightness.light,
+          ),
+        ),
       ),
-      defaultTransition: Transition.fade,
-      transitionDuration: const Duration(milliseconds: 100),
+      defaultTransition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 500),
       popGesture: true,
+
       debugShowCheckedModeBanner: false,
       getPages: routes,
-      routingCallback: (routing) {},
-      initialRoute: AppRoutes.splashScreen
+      initialRoute: AppRoutes.splashScreen,
+      onReady: () => AppSize.init(context),
     );
   }
 }
