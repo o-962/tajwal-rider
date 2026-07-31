@@ -1,30 +1,32 @@
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
 import 'package:shared/core/routing/pages.dart';
 import 'package:shared/features/error/error_screen.dart';
 import 'package:shared/features/splash_screen/splash_screen.dart';
 import 'package:shared/features/welcome/welcome_screen.dart';
 import 'package:tajwal_rider/common/pages.dart';
-import 'package:tajwal_rider/features/auth/binding/register_binding.dart';
-import 'package:tajwal_rider/features/auth/register_screen.dart';
-import 'package:tajwal_rider/features/history/binding/history_binding.dart';
-import 'package:tajwal_rider/features/history/history_screen.dart';
-import 'package:tajwal_rider/features/history/trip_details_screen.dart';
-import 'package:tajwal_rider/features/main_settings/binding/settings_binding.dart';
-import 'package:tajwal_rider/features/main_settings/settings_screen.dart';
+import 'package:tajwal_rider/features/account/account_screen.dart';
+import 'package:tajwal_rider/features/account/binding/account_binding.dart';
+import 'package:tajwal_rider/features/auth/register/binding/register_binding.dart';
+import 'package:tajwal_rider/features/auth/register/register_screen.dart';
+import 'package:tajwal_rider/features/history/binding/rider_history_binding.dart';
+import 'package:tajwal_rider/features/history/rider_history_screen.dart';
+import 'package:tajwal_rider/features/home/binding/home_binding.dart';
+import 'package:tajwal_rider/features/home/home_screen.dart';
+import 'package:tajwal_rider/features/orders/current_order/current_order_screen.dart';
+import 'package:tajwal_rider/features/orders/gifts_order/binding/gifts_order_binding.dart';
+import 'package:tajwal_rider/features/orders/order_summary/binding/order_summary_binding.dart';
+import 'package:tajwal_rider/features/orders/order_summary/order_summary_screen.dart';
+import 'package:tajwal_rider/features/orders/gifts_order/gifts_order_screen.dart';
+import 'package:tajwal_rider/features/orders/passengers_order/binding/passengers_order_binding.dart' hide GiftsOrderBinding;
+import 'package:tajwal_rider/features/orders/passengers_order/passengers_order_screen.dart';
+import 'package:tajwal_rider/features/orders/shared/dropoff/binding/dropoff_binding.dart';
+import 'package:tajwal_rider/features/orders/shared/dropoff/dropoff_screen.dart';
+import 'package:tajwal_rider/features/orders/shared/pickup/binding/pickup_binding.dart';
+import 'package:tajwal_rider/features/orders/shared/pickup/pickup_screen.dart';
+import 'package:tajwal_rider/features/shell/binding/shell_binding.dart';
+import 'package:tajwal_rider/features/shell/shell_screen.dart';
 import 'package:tajwal_rider/features/splash_screen/binding/splash_binding.dart';
-import 'package:tajwal_rider/features/trip_active/rate/binding/rate_binding.dart';
-import 'package:tajwal_rider/features/trip_active/rate/rate_screen.dart';
-import 'package:tajwal_rider/features/trip_active/ride_map/binding/ride_map_binding.dart';
-import 'package:tajwal_rider/features/trip_active/ride_map/ride_map_screen.dart';
-import 'package:tajwal_rider/features/trip_setup/ride_preferences/options_screen.dart';
-import 'package:tajwal_rider/features/trip_setup/ride_route_selection/dropoff/binding/dropoff_binding.dart';
-import 'package:tajwal_rider/features/trip_setup/ride_route_selection/dropoff/dropoff_screen.dart';
-import 'package:tajwal_rider/features/trip_setup/ride_route_selection/pickup/binding/pickup_binding.dart';
-import 'package:tajwal_rider/features/trip_setup/ride_route_selection/pickup/pickup_screen.dart';
-import 'package:tajwal_rider/features/trip_setup/ride_summary/binding/receipt_binding.dart';
-import 'package:tajwal_rider/features/trip_setup/ride_summary/ride_summary_screen.dart';
-import 'package:tajwal_rider/features/trip_waiting/ride_pending_acceptance/binding/pending_binding.dart';
-import 'package:tajwal_rider/features/trip_waiting/ride_pending_acceptance/pending_screen.dart';
+import 'package:tajwal_rider/features/splash_screen/controller/splash_screen_controller.dart';
 
 List<GetPage> routes = [
   GetPage(name: AppRoutes.welcome, page: () => const WelcomeScreen()),
@@ -33,57 +35,44 @@ List<GetPage> routes = [
     page: () => RegisterScreen(),
     binding: RegisterBinding(),
   ),
-  GetPage(
-    name: AppRoutes.pickup,
-    page: () => PickupScreen(),
-    binding: PickupBinding(),
-  ),
   GetPage(name: AppRoutes.error, page: () => ErrorScreen()),
-
+  GetPage(name: AppRoutes.home, page: () => HomeScreen() , binding: HomeBinding()),
+  GetPage(name: AppRoutes.giftsOrder, page: () => GiftsOrderScreen()  , binding: GiftsOrderBinding()),
+  GetPage(name: AppRoutes.shell, page: () => ShellScreen() , binding: ShellBinding()),
+  GetPage(name: AppRoutes.passengersOrder, page: () => PassengersOrderScreen(), binding: PassengersOrderBinding()),
+  GetPage(name: AppRoutes.currentOrder, page: () => CurrentOrderScreen()),
   GetPage(
-    name: AppRoutes.dropoff,
-    page: () => DropoffScreen(),
-    binding: DropoffBinding(),
-  ),
-  GetPage(name: AppRoutes.options, page: () => OptionsScreen()),
-  GetPage(
-    name: AppRoutes.receipt,
-    page: () => ReceiptScreen(),
-    binding: ReceiptBinding(),
+    name: AppRoutes.orderSummary,
+    page: () => const OrderSummaryScreen(),
+    binding: OrderSummaryBinding(),
   ),
   GetPage(
-    name: AppRoutes.pending,
-    page: () => PendingScreen(),
-    binding: PendingBinding(),
+    name: AppRoutes.orderHistory,
+    page: () => const RiderHistoryScreen(),
+    binding: RiderHistoryBinding(),
   ),
+  // View only, but fetches the profile over HTTP on open — hence a binding.
   GetPage(
-    name: AppRoutes.rideMap,
-    page: () => RideMapScreen(),
-    binding: RideMapBinding(),
+    name: AppRoutes.account,
+    page: () => const AccountScreen(),
+    binding: AccountBinding(),
   ),
-  GetPage(
-    name: AppRoutes.rate,
-    page: () => RateScreen(),
-    binding: RateBinding(),
-  ),
-  GetPage(
-    name: AppRoutes.settings,
-    page: () => SettingsScreen(),
-    binding: SettingsBinding(),
-  ),
-  GetPage(
-    name: AppRoutes.history,
-    page: () => HistoryScreen(),
-    binding: HistoryBinding(),
-  ),
-  GetPage(
-    name: AppRoutes.tripDetails,
-    page: () => const TripDetailsScreen(),
-  ),
+  GetPage(name: AppRoutes.pickup, page: () => const PickupScreen(), binding: PickupBinding()),
+  GetPage(name: AppRoutes.dropoff, page: () => const DropoffScreen(), binding: DropoffBinding()),
   GetPage(
     name: AppRoutes.splashScreen,
-    page: () => SplashScreen(),
+    page: () {
+      final controller = Get.find<SplashScreenController>();
+      return Obx(
+        () => SplashScreen(
+          loadingProgress: controller.loadingProgress.value,
+          loadingStatus: controller.loadingStatus.value,
+          isLoading: controller.isLoading.value,
+        ),
+      );
+    },
     binding: SplashBinding(),
   ),
+
   ...commonRoutes,
 ];

@@ -54,6 +54,7 @@ dependencies:
   wave_widget: ^0.1.1
   url_launcher: ^6.3.2
   firebase_analytics: ^12.1.2
+  image_picker: ^1.1.2
 
 
 dev_dependencies:

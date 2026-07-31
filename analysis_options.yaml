@@ -15,6 +15,7 @@ analyzer:
     - "**/android/**"
   errors:
     invalid_use_of_protected_member: ignore
+    avoid_print: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
