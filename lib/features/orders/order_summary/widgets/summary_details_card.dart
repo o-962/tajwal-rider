@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tajwal_rider/features/orders/order_summary/dto/order_summary_dto.dart';
 import 'package:tajwal_rider/features/orders/order_summary/widgets/summary_card.dart';
 import 'package:tajwal_rider/features/orders/order_summary/widgets/summary_row.dart';
+import 'package:get/get.dart';
 
 /// The half of the summary that differs by order type: seats for a passenger
 /// ride, type + size for a gift. The backend sends exactly one of the two.
@@ -17,10 +18,10 @@ class SummaryDetailsCard extends StatelessWidget {
 
     if (summary.isGift && gift != null) {
       return SummaryCard(
-        title: 'Gift',
+        title: 'gift'.tr,
         children: [
-          SummaryRow(label: 'Delivery', value: _titleCase(gift.type), emphasize: true),
-          SummaryRow(label: 'Size', value: _titleCase(gift.size)),
+          SummaryRow(label: 'delivery'.tr, value: _titleCase(gift.type), emphasize: true),
+          SummaryRow(label: 'size'.tr, value: _titleCase(gift.size)),
         ],
       );
     }
@@ -28,17 +29,17 @@ class SummaryDetailsCard extends StatelessWidget {
     if (passengers == null) return const SizedBox.shrink();
 
     return SummaryCard(
-      title: 'Seats',
+      title: 'seats'.tr,
       children: [
         SummaryRow(
-          label: 'Total',
-          value: '${passengers.totalCount} ${passengers.totalCount == 1 ? 'seat' : 'seats'}',
+          label: 'total'.tr,
+          value: '${passengers.totalCount} ${passengers.totalCount == 1 ? 'seat'.tr : 'seats_lower'.tr}',
           emphasize: true,
         ),
         if (passengers.maleCount > 0)
-          SummaryRow(label: 'Male', value: passengers.maleCount.toString()),
+          SummaryRow(label: 'male'.tr, value: passengers.maleCount.toString()),
         if (passengers.femaleCount > 0)
-          SummaryRow(label: 'Female', value: passengers.femaleCount.toString()),
+          SummaryRow(label: 'female'.tr, value: passengers.femaleCount.toString()),
       ],
     );
   }

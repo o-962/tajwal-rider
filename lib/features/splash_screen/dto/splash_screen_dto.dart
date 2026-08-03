@@ -13,6 +13,11 @@ class AppConfigDto {
   Map<String, dynamic> translations = {};
   int minPassengers = 1;
   int maxPassengers = 3;
+
+  /// Minutes the "resend OTP" button stays disabled — mirrors the backend's
+  /// `otp_cooldown_min`. Applied to the shared [AppConfig] in `_applyInit`,
+  /// because the OTP screens live in the shared package and can't read this DTO.
+  int otpCooldownMin = 1;
   bool inMaintenance = false;
   bool enableLogin = false;
   bool enableRegistration = false;
@@ -47,6 +52,7 @@ class AppConfigDto {
     _parseAreas(json[FieldInputType.AREAS.value], dto);
     dto.minPassengers = toInt(json[FieldInputType.MIN_PASSENGERS.value] ?? 1);
     dto.maxPassengers = toInt(json[FieldInputType.MAX_PASSENGERS.value] ?? 3);
+    dto.otpCooldownMin = toInt(json[FieldInputType.OTP_COOLDOWN_MIN.value] ?? 1);
     dto.inMaintenance = json[FieldInputType.IN_MAINTENANCE.value] ?? false;
     dto.enableLogin = json[FieldInputType.ENABLE_LOGIN.value] ?? false;
     dto.enableRegistration = json[FieldInputType.ENABLE_REGISTRATION.value] ?? false;

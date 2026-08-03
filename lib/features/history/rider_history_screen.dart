@@ -15,7 +15,7 @@ class RiderHistoryScreen extends GetView<RiderHistoryController> {
     return Scaffold(
       backgroundColor: OrderTokens.page,
       appBar: AppBar(
-        title: const Text('Order history'),
+        title: Text('order_history'.tr),
         backgroundColor: OrderTokens.page,
         surfaceTintColor: OrderTokens.page,
         elevation: 0,
@@ -32,8 +32,8 @@ class RiderHistoryScreen extends GetView<RiderHistoryController> {
           }
 
           if (controller.isEmpty) {
-            return const RiderHistoryEmpty(
-              message: "You haven't placed any orders yet.\nYour past rides and gifts appear here.",
+            return RiderHistoryEmpty(
+              message: 'rider_history_empty'.tr,
             );
           }
 

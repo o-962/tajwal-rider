@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tajwal_rider/features/history/dto/rider_history_dto.dart';
 import 'package:tajwal_rider/features/history/widgets/rider_history_status_chip.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
+import 'package:get/get.dart';
 
 /// One past order: type + status, route, what it was, and what it cost.
 class RiderHistoryCard extends StatelessWidget {
@@ -35,7 +36,7 @@ class RiderHistoryCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  order.isGift ? 'Gift delivery' : 'Passenger ride',
+                  order.isGift ? 'gift_delivery'.tr : 'passenger_ride'.tr,
                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: OrderTokens.ink),
                 ),
               ),
@@ -60,14 +61,14 @@ class RiderHistoryCard extends StatelessWidget {
             const SizedBox(height: 6),
             _row(
               Icons.event_seat_outlined,
-              '${passengers.totalCount} ${passengers.totalCount == 1 ? 'seat' : 'seats'}'
+              '${passengers.totalCount} ${passengers.totalCount == 1 ? 'seat'.tr : 'seats_lower'.tr}'
               ' · ${passengers.maleCount}M / ${passengers.femaleCount}F',
             ),
           ],
 
           if (order.hasDriver) ...[
             const SizedBox(height: 6),
-            _row(Icons.badge_outlined, 'Driver: ${order.driverName}'),
+            _row(Icons.badge_outlined, '${'driver'.tr}: ${order.driverName}'),
           ],
 
           const Padding(
@@ -79,7 +80,7 @@ class RiderHistoryCard extends StatelessWidget {
           // what was actually paid.
           Row(
             children: [
-              const Text('Paid', style: TextStyle(fontSize: 13, color: OrderTokens.muted)),
+              Text('paid'.tr, style: TextStyle(fontSize: 13, color: OrderTokens.muted)),
               const Spacer(),
               if (order.hasDiscount) ...[
                 Text(

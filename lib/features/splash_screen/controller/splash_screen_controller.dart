@@ -12,7 +12,7 @@ class SplashScreenController extends GetxController {
   TranslationService get translationService => Get.find<TranslationService>();
   AppConfigController get appConfigController => Get.find<AppConfigController>();
   final RxDouble loadingProgress = 0.0.obs;
-  final RxString loadingStatus = ''.tr.obs;
+  final RxString loadingStatus = ''.obs;
   final RxBool isLoading = true.obs;
 
   @override
@@ -132,6 +132,10 @@ class SplashScreenController extends GetxController {
       if (response.statusCode == HttpStatus.ok && data != null) {
         AppConfigDto configs = AppConfigDto.fromJson(data);
         translationService.addTranslations(configs.translations);
+
+        // Hand the OTP cooldown to the shared package: the OTP screens live
+        // there and can't reach this app's config controller.
+        AppConfig.otpCooldownMinutes = configs.otpCooldownMin;
         loadingStatus.value = 'loading_account'.tr;
         isLoading.value = false;
         await _smoothProgress(0.2, durationMs: 800);

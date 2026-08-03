@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared/index.dart';
 import 'package:tajwal_rider/features/orders/order_summary/widgets/summary_card.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
+import 'package:get/get.dart';
 
 /// Discount code entry. Applying re-requests the quote from the backend, so the
 /// code is genuinely sent and the total always comes back from the server —
@@ -33,7 +34,7 @@ class SummaryDiscountField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SummaryCard(
-      title: 'Discount code',
+      title: 'discount_code'.tr,
       children: [
         Row(
           children: [
@@ -53,7 +54,7 @@ class SummaryDiscountField extends StatelessWidget {
                   color: OrderTokens.ink,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Enter a code',
+                  hintText: 'enter_a_code'.tr,
                   hintStyle: const TextStyle(fontSize: 13.5, color: OrderTokens.muted),
                   isDense: true,
                   filled: applied,
@@ -105,8 +106,8 @@ class SummaryDiscountField extends StatelessWidget {
                               height: 16,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text(
-                              'Apply',
+                          : Text(
+                              'apply'.tr,
                               style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600),
                             ),
                     ),

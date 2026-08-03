@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared/shared/enums/global.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
+import 'package:get/get.dart';
 
 /// An "Any / Male / Female" gender-preference selector, used for both the
 /// preferred driver and the preferred co-passengers.
@@ -34,11 +35,11 @@ class GenderPreferenceSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _option(PreferredGender.ANY, 'Any')),
+        Expanded(child: _option(PreferredGender.ANY, 'any'.tr)),
         const SizedBox(width: 8),
-        Expanded(child: _option(PreferredGender.MALE, 'Male')),
+        Expanded(child: _option(PreferredGender.MALE, 'male'.tr)),
         const SizedBox(width: 8),
-        Expanded(child: _option(PreferredGender.FEMALE, 'Female')),
+        Expanded(child: _option(PreferredGender.FEMALE, 'female'.tr)),
       ],
     );
   }

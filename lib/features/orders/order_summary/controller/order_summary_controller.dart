@@ -103,7 +103,7 @@ class OrderSummaryController extends GetxController {
       if (applied) await loadSummary();
     } catch (_) {
       discountApplied.value = false;
-      discountMessage.value = "Couldn't check that code. Try again.";
+      discountMessage.value = 'could_not_check_code'.tr;
     } finally {
       validating.value = false;
     }
@@ -133,13 +133,13 @@ class OrderSummaryController extends GetxController {
       } else {
         // The backend rejected the draft (invalid route, an order already
         // active, …). Its toast_body carries the reason.
-        error.value = response.toastBody ?? response.message ?? 'Couldn\'t price this order.';
+        error.value = response.toastBody ?? response.message ?? 'could_not_price_order'.tr;
       }
     } catch (_) {
       // A timeout or dropped connection still throws (validateStatus only
       // covers status codes). Without this the page would spin forever and the
       // rider could never place the order at all.
-      error.value = 'Couldn\'t reach the server. Check your connection and try again.';
+      error.value = 'could_not_reach_server_retry'.tr;
     } finally {
       loading.value = false;
     }

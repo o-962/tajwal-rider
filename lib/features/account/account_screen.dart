@@ -17,7 +17,7 @@ class AccountScreen extends GetView<AccountController> {
     return Scaffold(
       backgroundColor: OrderTokens.page,
       appBar: AppBar(
-        title: const Text('Account details'),
+        title: Text('account_details'.tr),
         backgroundColor: OrderTokens.page,
         surfaceTintColor: OrderTokens.page,
         elevation: 0,
@@ -31,7 +31,7 @@ class AccountScreen extends GetView<AccountController> {
           final account = controller.account.value;
           if (account == null) {
             return _Error(
-              message: controller.error.value ?? "Couldn't load your account.",
+              message: controller.error.value ?? 'could_not_load_account'.tr,
               onRetry: controller.fetchAccount,
             );
           }
@@ -49,13 +49,13 @@ class AccountScreen extends GetView<AccountController> {
                     color: OrderTokens.accentSoft,
                     borderRadius: OrderTokens.rField,
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
                       Icon(Icons.info_outline, size: 18, color: OrderTokens.accent),
                       SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          'These details are view only.',
+                          'details_view_only'.tr,
                           style: TextStyle(fontSize: 12.5, color: OrderTokens.ink),
                         ),
                       ),
@@ -63,10 +63,10 @@ class AccountScreen extends GetView<AccountController> {
                   ),
                 ),
 
-                AccountField(label: 'Full name', value: account.fullName, icon: Icons.person_outline),
-                AccountField(label: 'Username', value: account.userName, icon: Icons.alternate_email),
-                AccountField(label: 'Email', value: account.email, icon: Icons.email_outlined),
-                AccountField(label: 'Phone number', value: account.phoneNumber, icon: Icons.phone_outlined),
+                AccountField(label: 'full_name'.tr, value: account.fullName, icon: Icons.person_outline),
+                AccountField(label: 'username_label'.tr, value: account.userName, icon: Icons.alternate_email),
+                AccountField(label: 'email_label'.tr, value: account.email, icon: Icons.email_outlined),
+                AccountField(label: 'phone_number_label'.tr, value: account.phoneNumber, icon: Icons.phone_outlined),
               ],
             ),
           );
@@ -106,7 +106,7 @@ class _Error extends StatelessWidget {
                 side: const BorderSide(color: OrderTokens.primary),
                 shape: RoundedRectangleBorder(borderRadius: OrderTokens.rField),
               ),
-              child: const Text('Try again'),
+              child: Text('try_again'.tr),
             ),
           ],
         ),

@@ -8,6 +8,7 @@ import 'package:tajwal_rider/features/orders/passengers_order/widgets/confirm_or
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/departure_slot_button.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/departure_slot_sheet.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/location_picker_button.dart';
+import 'package:tajwal_rider/features/orders/passengers_order/widgets/route_swap_button.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/section_label.dart';
 
@@ -20,12 +21,12 @@ class GiftsOrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: OrderTokens.page,
-      appBar: AppBar(elevation: 0, title: const Text('Gift Order')),
+      appBar: AppBar(elevation: 0, title: Text('gift_order'.tr)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
         children: [
           // ── Pickup & dropoff ───────────────────────────────────────────
-          const SectionLabel('Pickup & dropoff'),
+          SectionLabel('pickup_and_dropoff'.tr),
           const SizedBox(height: 6),
           Obx(
             () => LocationPickerButton(
@@ -34,7 +35,16 @@ class GiftsOrderScreen extends StatelessWidget {
               onTap: () => controller.openPickup(),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
+          // The only way to reverse a trip in place — each picker hides the
+          // other leg's area, so a return trip is otherwise unbuildable.
+          Obx(
+            () => RouteSwapButton(
+              enabled: controller.hasPickup && controller.hasDrop,
+              onTap: controller.swapRoute,
+            ),
+          ),
+          const SizedBox(height: 6),
           Obx(
             () => _gate(
               enabled: controller.hasPickup,
@@ -48,16 +58,16 @@ class GiftsOrderScreen extends StatelessWidget {
           const SizedBox(height: 14),
 
           // ── Gift type ──────────────────────────────────────────────────
-          const SectionLabel('Gift type'),
+          SectionLabel('gift_type'.tr),
           const SizedBox(height: 6),
           Obx(
             () => _gate(
               enabled: controller.routeReady,
               child: Row(
                 children: [
-                  Expanded(child: _typeChip(GiftType.NORMAL, 'Normal')),
+                  Expanded(child: _typeChip(GiftType.NORMAL, 'normal'.tr)),
                   const SizedBox(width: 10),
-                  Expanded(child: _typeChip(GiftType.FAST, 'Fast')),
+                  Expanded(child: _typeChip(GiftType.FAST, 'fast'.tr)),
                 ],
               ),
             ),
@@ -66,7 +76,7 @@ class GiftsOrderScreen extends StatelessWidget {
           const SizedBox(height: 14),
 
           // ── Gift size ──────────────────────────────────────────────────
-          const SectionLabel('Gift size'),
+          SectionLabel('gift_size'.tr),
           const SizedBox(height: 6),
           Obx(
             () => Column(
@@ -78,10 +88,10 @@ class GiftsOrderScreen extends StatelessWidget {
                     spacing: 10,
                     runSpacing: 10,
                     children: [
-                      _sizeChip(GiftSize.SMALL, 'Small'),
-                      _sizeChip(GiftSize.MEDIUM, 'Medium'),
-                      _sizeChip(GiftSize.LARGE, 'Large'),
-                      _sizeChip(GiftSize.VERY_LARGE, 'Very large'),
+                      _sizeChip(GiftSize.SMALL, 'small'.tr),
+                      _sizeChip(GiftSize.MEDIUM, 'medium'.tr),
+                      _sizeChip(GiftSize.LARGE, 'large'.tr),
+                      _sizeChip(GiftSize.VERY_LARGE, 'very_large'.tr),
                     ],
                   ),
                 ),
@@ -92,7 +102,7 @@ class GiftsOrderScreen extends StatelessWidget {
           const SizedBox(height: 14),
 
           // ── Recipient ──────────────────────────────────────────────────
-          const SectionLabel('Recipient'),
+          SectionLabel('recipient'.tr),
           const SizedBox(height: 6),
           _gate(
             enabled: true,
@@ -100,14 +110,14 @@ class GiftsOrderScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _field(
-                  hint: 'Recipient name',
+                  hint: 'recipient_name_label'.tr,
                   keyboardType: TextInputType.name,
                   onChanged: controller.setRecipientName,
                 ),
                 FieldInput(field: controller.form.get(FieldInputType.RECIPIENT_NAME)),
                 const SizedBox(height: 10),
                 _field(
-                  hint: 'Recipient phone',
+                  hint: 'recipient_phone_label'.tr,
                   keyboardType: TextInputType.phone,
                   onChanged: controller.setRecipientPhone,
                 ),
@@ -118,7 +128,7 @@ class GiftsOrderScreen extends StatelessWidget {
           const SizedBox(height: 14),
 
           // ── Gift photo ─────────────────────────────────────────────────
-          const SectionLabel('Gift photo'),
+          SectionLabel('gift_photo'.tr),
           const SizedBox(height: 6),
           Obx(() => _imagePicker()),
           FieldInput(field: controller.form.get(FieldInputType.IMAGE)),
@@ -129,8 +139,8 @@ class GiftsOrderScreen extends StatelessWidget {
             () => _gate(
               enabled: controller.routeReady,
               child: DepartureSlotButton(
-                title: 'Choose a departure slot',
-                subtitle: controller.hasSlot.value ? 'Departs at ${controller.slotLabel}' : 'Tap to pick a time slot',
+                title: 'choose_departure_slot'.tr,
+                subtitle: controller.hasSlot.value ? '${'departs_at'.tr} ${controller.slotLabel}' : 'tap_to_pick_time_slot'.tr,
                 onTap: _openSlotSheet,
               ),
             ),
@@ -145,7 +155,7 @@ class GiftsOrderScreen extends StatelessWidget {
             // is only created once the rider confirms the backend's figures.
             () => ConfirmOrderButton(
               enabled: controller.canConfirm,
-              label: 'Review gift',
+              label: 'review_gift'.tr,
               caption: controller.canConfirm ? null : _confirmHint(),
               onTap: controller.openSummary,
             ),
@@ -245,12 +255,12 @@ class GiftsOrderScreen extends StatelessWidget {
           borderRadius: OrderTokens.rMap,
         ),
         child: image == null
-            ? const Column(
+            ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.add_a_photo_outlined, color: OrderTokens.accent, size: 28),
                   SizedBox(height: 8),
-                  Text('Tap to upload a photo of the gift', style: TextStyle(fontSize: 13, color: OrderTokens.muted)),
+                  Text('tap_to_upload_gift_photo'.tr, style: TextStyle(fontSize: 13, color: OrderTokens.muted)),
                 ],
               )
             : Image.file(image, fit: BoxFit.cover, width: double.infinity),
@@ -268,7 +278,7 @@ class GiftsOrderScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Estimated total · ${controller.order.type.value} gift',
+            '${'estimated_total'.tr} · ${controller.order.type.value}',
             style: const TextStyle(fontSize: 14, color: OrderTokens.muted),
           ),
           Text(
@@ -293,9 +303,9 @@ class GiftsOrderScreen extends StatelessWidget {
   }
 
   String _confirmHint() {
-    if (!controller.routeReady) return 'Pick a pickup and dropoff to continue';
-    if (!controller.hasRecipient) return 'Add the recipient name and phone to continue';
-    if (!controller.hasImage) return 'Upload a photo of the gift to continue';
-    return 'Pick a departure slot to continue';
+    if (!controller.routeReady) return 'pick_pickup_dropoff_to_continue'.tr;
+    if (!controller.hasRecipient) return 'add_recipient_to_continue'.tr;
+    if (!controller.hasImage) return 'upload_gift_photo_to_continue'.tr;
+    return 'pick_departure_slot_to_continue'.tr;
   }
 }

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:shared/core/network/api_client.dart';
 import 'package:shared/models/api_dto.dart';
+import 'package:shared/models/message_dto.dart';
+import 'package:shared/shared/services/notification_service.dart';
 import 'package:shared/shared/enums/global.dart';
 import 'package:tajwal_rider/common/pages.dart';
 import 'package:tajwal_rider/features/config/config_controller.dart';
@@ -10,6 +12,7 @@ import 'package:tajwal_rider/features/orders/passengers_order/model/passengers_o
 import 'package:tajwal_rider/features/orders/shared/base/order_location_target.dart';
 import 'package:tajwal_rider/features/orders/shared/base/order_summary_target.dart';
 import 'package:tajwal_rider/features/splash_screen/dto/splash_screen_dto.dart';
+import 'package:tajwal_rider/utils/route_options.dart';
 
 class PassengersOrderController extends GetxController
     implements OrderLocationTarget, OrderSummaryTarget {
@@ -26,8 +29,34 @@ class PassengersOrderController extends GetxController
   @override
   String? get pickupCityValue => pickupCity.value;
 
-  final RxString pickupLabel = 'Choose a pickup point'.obs;
-  final RxString dropLabel = 'Choose a dropoff point'.obs;
+  @override
+  String? get dropCityValue => dropCity.value;
+
+  final RxString pickupLabel = 'choose_pickup_point'.tr.obs;
+  final RxString dropLabel = 'choose_dropoff_point'.tr.obs;
+
+  /// Keyed off the city, never the coordinates: the model seeds lat/lng with
+  /// real defaults, so a non-null coordinate proves nothing about whether the
+  /// rider actually picked anything.
+  @override
+  LocationSelection? get pickupSelection => pickupCity.value == null
+      ? null
+      : LocationSelection(
+          city: pickupCity.value!,
+          lat: order.pickupLat,
+          lng: order.pickupLng,
+          label: pickupLabel.value,
+        );
+
+  @override
+  LocationSelection? get dropSelection => dropCity.value == null
+      ? null
+      : LocationSelection(
+          city: dropCity.value!,
+          lat: order.dropLat,
+          lng: order.dropLng,
+          label: dropLabel.value,
+        );
 
   /// Whether the rider has picked a departure slot yet — gates confirmation.
   final RxBool hasSlot = false.obs;
@@ -131,7 +160,71 @@ class PassengersOrderController extends GetxController
     order.pickupLat = lat;
     order.pickupLng = lng;
     pickupLabel.value = label;
+    _clearDropIfUnreachable();
+    _resetSlot();
     passengersOrder.refresh();
+  }
+
+  /// Reverse the trip in place.
+  ///
+  /// Exists because the same-area exclusion is symmetric: pickup hides the
+  /// dropoff area and dropoff hides the pickup area, so a rider on Amman→Irbid
+  /// is offered neither area they need to build Irbid→Amman and would have to
+  /// abandon the order. A return trip is an ordinary thing to want.
+  ///
+  /// Assigns the fields directly rather than calling [setPickup]/[setDrop]:
+  /// those run [_clearDropIfUnreachable], which would fire against the
+  /// half-swapped state and wipe the leg being moved.
+  ///
+  /// Gated on the REVERSE pair being priced — Amman→Irbid existing does not imply
+  /// Irbid→Amman does, and an unpriced pair is rejected at submit.
+  void swapRoute() {
+    if (!routeReady) return;
+
+    if (!RouteOptions.canTravel(dropCity.value!, pickupCity.value!)) {
+      NotificationService.message(
+        MessageDto(
+          toastHead: 'location_invalid'.tr,
+          toastType: ToastTypes.ALERT,
+          toastBody: 'route_reverse_unavailable'.tr,
+        ),
+      );
+      return;
+    }
+
+    final city = pickupCity.value;
+    final lat = order.pickupLat;
+    final lng = order.pickupLng;
+    final label = pickupLabel.value;
+
+    pickupCity.value = dropCity.value;
+    order.pickupLat = order.dropLat;
+    order.pickupLng = order.dropLng;
+    pickupLabel.value = dropLabel.value;
+
+    dropCity.value = city;
+    order.dropLat = lat;
+    order.dropLng = lng;
+    dropLabel.value = label;
+
+    // The reversed route has its own available_slots and booking windows.
+    _resetSlot();
+    passengersOrder.refresh();
+  }
+
+  /// Drop a dropoff that the NEW pickup can't reach.
+  ///
+  /// The dropoff map only ever offers reachable areas, but it filters against
+  /// the pickup that was set when it opened. Going back and changing the pickup
+  /// leaves the old dropoff in place — an unpriced pair that looks selected,
+  /// prices as null, and is rejected at submit with
+  /// `INVALID_PICKUP_OR_DROPOFF_LOCATION`. Clearing it forces a re-pick from the
+  /// correctly filtered map, and `routeReady` re-locks the rest of the form.
+  void _clearDropIfUnreachable() {
+    final drop = dropCity.value;
+    if (drop == null || RouteOptions.canTravel(pickupCity.value ?? '', drop)) return;
+    dropCity.value = null;
+    dropLabel.value = 'choose_dropoff_point'.tr;
   }
 
   @override
@@ -140,8 +233,19 @@ class PassengersOrderController extends GetxController
     order.dropLat = lat;
     order.dropLng = lng;
     dropLabel.value = label;
+    _resetSlot();
     passengersOrder.refresh();
   }
+
+  /// Force the departure slot to be re-picked after any route change.
+  ///
+  /// Slots are route-specific — [slotDays] is built from
+  /// `RideCostDto.availableSlots` and the route's booking windows — but
+  /// [canConfirm] only checks the `hasSlot` flag, never whether `scheduledAt` is
+  /// still an offered hour. Leaving it set lets an order submit at an hour the
+  /// new route doesn't run. The slot controls are gated behind `routeReady`
+  /// anyway, so a slot can only ever exist after both legs are set.
+  void _resetSlot() => hasSlot.value = false;
 
   // ── Seats ───────────────────────────────────────────────────────────────
   void setMaleCount(int value) {
@@ -222,14 +326,14 @@ class PassengersOrderController extends GetxController
   String _dayLabel(DateTime date, DateTime now) {
     final today = DateTime(now.year, now.month, now.day);
     final diff = DateTime(date.year, date.month, date.day).difference(today).inDays;
-    if (diff == 0) return 'Today';
-    if (diff == 1) return 'Tomorrow';
+    if (diff == 0) return 'today'.tr;
+    if (diff == 1) return 'tomorrow'.tr;
     return '${date.day}/${date.month}/${date.year}';
   }
 
   /// Formats a 24h hour into a 12h label, e.g. 3 -> "3:00 AM", 21 -> "9:00 PM".
   String formatHour(int hour) {
-    final period = hour < 12 ? 'AM' : 'PM';
+    final period = hour < 12 ? 'am'.tr : 'pm'.tr;
     final display = hour % 12 == 0 ? 12 : hour % 12;
     return '$display:00 $period';
   }

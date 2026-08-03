@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tajwal_rider/features/orders/order_summary/dto/order_summary_dto.dart';
 import 'package:tajwal_rider/features/orders/order_summary/widgets/summary_card.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
+import 'package:get/get.dart';
 
 /// The rider's balance, fetched with the quote when this page opens.
 ///
@@ -14,7 +15,7 @@ class SummaryWalletCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SummaryCard(
-      title: 'Your balance',
+      title: 'your_balance'.tr,
       children: [
         Row(
           children: [
@@ -38,8 +39,8 @@ class SummaryWalletCard extends StatelessWidget {
         ),
         if (!summary.hasWallet) ...[
           const SizedBox(height: 6),
-          const Text(
-            'You have no balance to use on this order.',
+          Text(
+            'no_balance_for_order'.tr,
             style: TextStyle(fontSize: 12.5, color: OrderTokens.muted),
           ),
         ],

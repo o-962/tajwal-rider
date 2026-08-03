@@ -3,7 +3,6 @@ import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:shared/base/base_controller.dart';
 import 'package:shared/core/network/api_client.dart';
 import 'package:shared/core/routing/endpoints.dart';
-import 'package:shared/core/routing/route.dart';
 import 'package:shared/models/api_dto.dart';
 import 'package:shared/shared/fields/controllers/form_controller.dart';
 import 'package:shared/shared/fields/interfaces/fields.dart';

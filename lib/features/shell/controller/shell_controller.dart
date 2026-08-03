@@ -17,8 +17,8 @@ class ShellController extends GetxController {
     IconData selectedIcon,
     String label,
   })> items = [
-    (icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'Home', screenBuilder: () => HomeScreen()),
-    (icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: 'Settings', screenBuilder: () => SettingsScreen()),
+    (icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'home'.tr, screenBuilder: () => HomeScreen()),
+    (icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: 'settings'.tr, screenBuilder: () => SettingsScreen()),
   ];
 
 

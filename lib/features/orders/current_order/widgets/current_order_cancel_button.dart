@@ -23,7 +23,7 @@ class CurrentOrderCancelButton extends StatelessWidget {
           ? ElevatedButton.icon(
               onPressed: _confirm,
               icon: const Icon(Icons.close),
-              label: const Text('Cancel order'),
+              label: Text('cancel_order'.tr),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red.shade600,
                 foregroundColor: Colors.white,
@@ -40,8 +40,8 @@ class CurrentOrderCancelButton extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
-              child: const Text(
-                'Cancel order',
+              child: Text(
+                'cancel_order'.tr,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
             ),
@@ -50,10 +50,10 @@ class CurrentOrderCancelButton extends StatelessWidget {
 
   void _confirm() {
     Get.defaultDialog(
-      title: 'Cancel order',
-      middleText: 'Are you sure you want to cancel this order?',
-      textCancel: 'No',
-      textConfirm: 'Yes, cancel',
+      title: 'cancel_order'.tr,
+      middleText: 'cancel_order_confirm'.tr,
+      textCancel: 'no'.tr,
+      textConfirm: 'yes_cancel'.tr,
       confirmTextColor: Colors.white,
       buttonColor: Colors.red.shade600,
       onConfirm: () {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared/shared/constants/map_options.dart';
 import 'package:tajwal_rider/features/orders/current_order/model/current_order_model.dart';
+import 'package:get/get.dart';
 
 /// Full-screen, freely draggable map behind the details sheet. Shows pickup,
 /// drop-off, and the driver's live location (which keeps updating as the
@@ -25,7 +26,7 @@ class CurrentOrderMap extends StatelessWidget {
       markers.add(Marker(
         markerId: const MarkerId('pickup'),
         position: LatLng(d.pickupLat, d.pickupLng),
-        infoWindow: const InfoWindow(title: 'Pickup'),
+        infoWindow: InfoWindow(title: 'pickup'.tr),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       ));
     }
@@ -33,7 +34,7 @@ class CurrentOrderMap extends StatelessWidget {
       markers.add(Marker(
         markerId: const MarkerId('dropoff'),
         position: LatLng(d.dropoffLat, d.dropoffLng),
-        infoWindow: const InfoWindow(title: 'Drop-off'),
+        infoWindow: InfoWindow(title: 'dropoff'.tr),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       ));
     }
@@ -41,7 +42,7 @@ class CurrentOrderMap extends StatelessWidget {
       markers.add(Marker(
         markerId: const MarkerId('driver'),
         position: LatLng(driver.lat!, driver.lng!),
-        infoWindow: InfoWindow(title: driver.name.isEmpty ? 'Driver' : driver.name),
+        infoWindow: InfoWindow(title: driver.name.isEmpty ? 'driver'.tr : driver.name),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
       ));
     }

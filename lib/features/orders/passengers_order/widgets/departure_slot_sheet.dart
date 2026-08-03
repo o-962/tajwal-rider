@@ -49,8 +49,8 @@ class DepartureSlotSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Choose a departure slot',
+          Text(
+            'choose_departure_slot'.tr,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -59,10 +59,10 @@ class DepartureSlotSheet extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           if (days.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Text(
-                'No departure slots available for this route.',
+                'no_slots_for_route'.tr,
                 style: TextStyle(fontSize: 13, color: OrderTokens.muted),
               ),
             )

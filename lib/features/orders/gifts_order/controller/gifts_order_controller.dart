@@ -13,6 +13,7 @@ import 'package:tajwal_rider/features/orders/passengers_order/controller/passeng
 import 'package:tajwal_rider/features/orders/shared/base/order_location_target.dart';
 import 'package:tajwal_rider/features/orders/shared/base/order_summary_target.dart';
 import 'package:tajwal_rider/features/splash_screen/dto/splash_screen_dto.dart';
+import 'package:tajwal_rider/utils/route_options.dart';
 
 class GiftsOrderController extends GetxController
     implements OrderLocationTarget, OrderSummaryTarget {
@@ -49,8 +50,33 @@ class GiftsOrderController extends GetxController
   @override
   String? get pickupCityValue => pickupCity.value;
 
-  final RxString pickupLabel = 'Choose a pickup point'.obs;
-  final RxString dropLabel = 'Choose a dropoff point'.obs;
+  @override
+  String? get dropCityValue => dropCity.value;
+
+  final RxString pickupLabel = 'choose_pickup_point'.tr.obs;
+  final RxString dropLabel = 'choose_dropoff_point'.tr.obs;
+
+  /// Keyed off the city, never the coordinates — the model seeds lat/lng with
+  /// real defaults, so a non-null coordinate proves nothing.
+  @override
+  LocationSelection? get pickupSelection => pickupCity.value == null
+      ? null
+      : LocationSelection(
+          city: pickupCity.value!,
+          lat: order.pickupLat,
+          lng: order.pickupLng,
+          label: pickupLabel.value,
+        );
+
+  @override
+  LocationSelection? get dropSelection => dropCity.value == null
+      ? null
+      : LocationSelection(
+          city: dropCity.value!,
+          lat: order.dropLat,
+          lng: order.dropLng,
+          label: dropLabel.value,
+        );
 
   /// Whether the rider has picked a departure slot yet — gates confirmation.
   final RxBool hasSlot = false.obs;
@@ -98,7 +124,58 @@ class GiftsOrderController extends GetxController
     order.pickupLat = lat;
     order.pickupLng = lng;
     pickupLabel.value = label;
+    _clearDropIfUnreachable();
+    _resetSlot();
     giftOrder.refresh();
+  }
+
+  /// Reverse the trip in place — see the fuller note on
+  /// `PassengersOrderController.swapRoute`. Assigns fields directly rather than
+  /// going through [setPickup]/[setDrop], whose `_clearDropIfUnreachable` would
+  /// fire against the half-swapped state and wipe the leg being moved.
+  void swapRoute() {
+    if (pickupCity.value == null || dropCity.value == null) return;
+
+    if (!RouteOptions.canTravel(dropCity.value!, pickupCity.value!)) {
+      NotificationService.message(
+        MessageDto(
+          toastHead: 'location_invalid'.tr,
+          toastType: ToastTypes.ALERT,
+          toastBody: 'route_reverse_unavailable'.tr,
+        ),
+      );
+      return;
+    }
+
+    final city = pickupCity.value;
+    final lat = order.pickupLat;
+    final lng = order.pickupLng;
+    final label = pickupLabel.value;
+
+    pickupCity.value = dropCity.value;
+    order.pickupLat = order.dropLat;
+    order.pickupLng = order.dropLng;
+    pickupLabel.value = dropLabel.value;
+
+    dropCity.value = city;
+    order.dropLat = lat;
+    order.dropLng = lng;
+    dropLabel.value = label;
+
+    // The reversed route has its own available_slots and booking windows.
+    _resetSlot();
+    giftOrder.refresh();
+  }
+
+  /// Drop a dropoff that the NEW pickup can't reach — see the identical guard in
+  /// `PassengersOrderController`. The dropoff map filters against the pickup that
+  /// was set when it opened, so changing the pickup afterwards can strand an
+  /// unpriced pair that only fails at submit.
+  void _clearDropIfUnreachable() {
+    final drop = dropCity.value;
+    if (drop == null || RouteOptions.canTravel(pickupCity.value ?? '', drop)) return;
+    dropCity.value = null;
+    dropLabel.value = 'choose_dropoff_point'.tr;
   }
 
   @override
@@ -107,8 +184,14 @@ class GiftsOrderController extends GetxController
     order.dropLat = lat;
     order.dropLng = lng;
     dropLabel.value = label;
+    _resetSlot();
     giftOrder.refresh();
   }
+
+  /// Force the departure slot to be re-picked after any route change — slots are
+  /// route-specific but `canConfirm` only checks the `hasSlot` flag, never
+  /// whether `scheduledAt` is still an hour the new route runs.
+  void _resetSlot() => hasSlot.value = false;
 
   // ── Gift details ──────────────────────────────────────────────────────────
   void setType(GiftType type) {
@@ -179,13 +262,13 @@ class GiftsOrderController extends GetxController
   String _dayLabel(DateTime date, DateTime now) {
     final today = DateTime(now.year, now.month, now.day);
     final diff = DateTime(date.year, date.month, date.day).difference(today).inDays;
-    if (diff == 0) return 'Today';
-    if (diff == 1) return 'Tomorrow';
+    if (diff == 0) return 'today'.tr;
+    if (diff == 1) return 'tomorrow'.tr;
     return '${date.day}/${date.month}/${date.year}';
   }
 
   String formatHour(int hour) {
-    final period = hour < 12 ? 'AM' : 'PM';
+    final period = hour < 12 ? 'am'.tr : 'pm'.tr;
     final display = hour % 12 == 0 ? 12 : hour % 12;
     return '$display:00 $period';
   }

@@ -15,8 +15,8 @@ class HomeQuickActions extends StatelessWidget {
         Expanded(
           child: HomeQuickActionCard(
             icon: Icons.card_giftcard,
-            title: 'Send a gift',
-            subtitle: 'Fast or normal',
+            title: 'send_a_gift'.tr,
+            subtitle: 'fast_or_normal'.tr,
             background: AppColor.warning,
             foreground: AppColor.black,
             onTap: () => Get.toNamed(AppRoutes.giftsOrder),
@@ -26,8 +26,8 @@ class HomeQuickActions extends StatelessWidget {
         Expanded(
           child: HomeQuickActionCard(
             icon: Icons.schedule,
-            title: 'Schedule',
-            subtitle: 'Pick a time slot',
+            title: 'schedule'.tr,
+            subtitle: 'pick_a_time_slot'.tr,
             background: AppColor.secondary,
             foreground: AppColor.primary,
             onTap: () => Get.toNamed(AppRoutes.passengersOrder),

@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:shared/utils/parsing.dart';
+import 'package:shared/utils/backend_date.dart';
 
 /// Passenger seats on a past order.
 class RiderHistoryPassengers {
@@ -147,11 +148,5 @@ class RiderHistoryOrderDto {
   }
 
   /// Formats a wire date (ISO or a JS `Date.toString()`) for display.
-  static String _fmt(String raw) {
-    if (raw.isEmpty) return '—';
-    final dt = DateTime.tryParse(raw);
-    if (dt != null) return DateFormat('EEE, MMM d · h:mm a').format(dt.toLocal());
-    final gmt = raw.indexOf(' GMT');
-    return gmt > 0 ? raw.substring(0, gmt).trim() : raw;
-  }
+  static String _fmt(String raw) => formatBackendDate(raw);
 }

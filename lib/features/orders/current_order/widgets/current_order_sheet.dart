@@ -4,6 +4,8 @@ import 'package:shared/shared/enums/order_status.dart';
 import 'package:tajwal_rider/features/orders/current_order/model/current_order_model.dart';
 import 'package:tajwal_rider/features/orders/current_order/widgets/current_order_cancel_button.dart';
 import 'package:tajwal_rider/features/orders/current_order/widgets/current_order_driver_card.dart';
+import 'package:get/get.dart';
+import 'package:shared/utils/area_label.dart';
 
 /// The draggable details sheet over the map: status, driver (call / WhatsApp /
 /// car), the pickup window, the route and cost, and cancel.
@@ -46,7 +48,7 @@ class CurrentOrderSheet extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  order.isGift ? 'Gift delivery' : 'Passenger ride',
+                  order.isGift ? 'gift_delivery'.tr : 'passenger_ride'.tr,
                   style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800, color: AppColor.black),
                 ),
               ),
@@ -74,7 +76,7 @@ class CurrentOrderSheet extends StatelessWidget {
               Expanded(
                 child: _InfoTile(
                   icon: Icons.payments,
-                  label: 'Cost',
+                  label: 'cost'.tr,
                   value: d.cost.isEmpty ? '—' : '${d.cost} JOD',
                 ),
               ),
@@ -83,10 +85,10 @@ class CurrentOrderSheet extends StatelessWidget {
                 child: order.isGift
                     ? _InfoTile(
                         icon: Icons.card_giftcard,
-                        label: 'Recipient',
-                        value: d.recipientName.isEmpty ? (d.giftType.isEmpty ? 'Gift' : d.giftType) : d.recipientName,
+                        label: 'recipient'.tr,
+                        value: d.recipientName.isEmpty ? (d.giftType.isEmpty ? 'gift'.tr : d.giftType) : d.recipientName,
                       )
-                    : _InfoTile(icon: Icons.people_alt, label: 'Seats', value: '${d.totalPassengers}'),
+                    : _InfoTile(icon: Icons.people_alt, label: 'seats'.tr, value: '${d.totalPassengers}'),
               ),
             ],
           ),
@@ -98,7 +100,7 @@ class CurrentOrderSheet extends StatelessWidget {
     );
   }
 
-  static String _area(String a) => a.isEmpty ? '—' : a.replaceAll('_', ' ');
+  static String _area(String a) => areaLabel(a);
 }
 
 // On the rider side an order becomes an "active ride" the moment driver data is
@@ -107,13 +109,13 @@ class CurrentOrderSheet extends StatelessWidget {
 ({Color color, String label}) _rideState(CurrentOrderModel order) {
   switch (order.status) {
     case OrderStatus.CANCELLED:
-      return (color: AppColor.alert, label: 'Cancelled');
+      return (color: AppColor.alert, label: 'cancelled'.tr);
     case OrderStatus.COMPLETED:
-      return (color: AppColor.primary, label: 'Completed');
+      return (color: AppColor.primary, label: 'completed'.tr);
     default:
       return order.hasDriver
-          ? (color: AppColor.primary, label: 'Active ride')
-          : (color: AppColor.warning, label: 'In holding');
+          ? (color: AppColor.primary, label: 'active_ride'.tr)
+          : (color: AppColor.warning, label: 'in_holding'.tr);
   }
 }
 
@@ -171,10 +173,10 @@ class _HoldingDriver extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('In holding', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColor.black)),
+                Text('in_holding'.tr, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColor.black)),
                 const SizedBox(height: 2),
                 Text(
-                  hasTime ? 'Driver details available at $availableAt' : 'Driver details available soon',
+                  hasTime ? '${'driver_details_available_at'.tr} $availableAt' : 'driver_details_available_soon'.tr,
                   style: const TextStyle(fontSize: 12, color: Colors.black54),
                 ),
               ],
@@ -207,18 +209,18 @@ class _PickupWindowCard extends StatelessWidget {
             children: [
               const Icon(Icons.schedule, size: 18, color: AppColor.primary),
               const SizedBox(width: 8),
-              Text('Pickup window', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColor.primary)),
+              Text('pickup_window'.tr, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColor.primary)),
             ],
           ),
           const SizedBox(height: 6),
           Text(
-            "You'll be picked up between",
+            'youll_be_picked_up_between'.tr,
             style: TextStyle(fontSize: 12, color: AppColor.primary.withValues(alpha: 0.8)),
           ),
           const SizedBox(height: 8),
-          _WindowRow(label: 'From', value: from),
+          _WindowRow(label: 'from'.tr, value: from),
           const SizedBox(height: 6),
-          _WindowRow(label: 'By', value: to),
+          _WindowRow(label: 'by'.tr, value: to),
         ],
       ),
     );
@@ -264,9 +266,9 @@ class _RouteCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _RouteRow(icon: Icons.trip_origin, color: AppColor.primary, label: 'Pickup', value: pickup),
+          _RouteRow(icon: Icons.trip_origin, color: AppColor.primary, label: 'pickup'.tr, value: pickup),
           Container(margin: const EdgeInsets.only(left: 10), width: 2, height: 20, color: AppColor.secondary),
-          _RouteRow(icon: Icons.location_on, color: AppColor.warning, label: 'Drop-off', value: dropoff),
+          _RouteRow(icon: Icons.location_on, color: AppColor.warning, label: 'dropoff'.tr, value: dropoff),
         ],
       ),
     );

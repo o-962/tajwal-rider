@@ -4,6 +4,7 @@ import 'package:shared/shared/constants/colors.dart';
 import 'package:shared/shared/enums/order_status.dart';
 import 'package:tajwal_rider/common/pages.dart';
 import 'package:tajwal_rider/features/orders/current_order/model/current_order_model.dart';
+import 'package:shared/utils/area_label.dart';
 
 /// The rider's active order, shown prominently on home so the screen stays full
 /// and informative while an order is in progress: status, route, key details,
@@ -53,14 +54,14 @@ class HomeActiveOrderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Route timeline
-                _RouteRow(icon: Icons.trip_origin, color: AppColor.primary, label: 'Pickup', area: _area(details.pickupArea)),
+                _RouteRow(icon: Icons.trip_origin, color: AppColor.primary, label: 'pickup'.tr, area: _area(details.pickupArea)),
                 Container(
                   margin: const EdgeInsets.only(left: 10),
                   width: 2,
                   height: 22,
                   color: AppColor.secondary,
                 ),
-                _RouteRow(icon: Icons.location_on, color: AppColor.warning, label: 'Drop-off', area: _area(details.dropoffArea)),
+                _RouteRow(icon: Icons.location_on, color: AppColor.warning, label: 'dropoff'.tr, area: _area(details.dropoffArea)),
                 const SizedBox(height: 18),
                 // Key details
                 Row(
@@ -69,7 +70,7 @@ class HomeActiveOrderCard extends StatelessWidget {
                     Expanded(
                       child: _Meta(
                         icon: order.isGift ? Icons.card_giftcard : Icons.people_alt,
-                        value: order.isGift ? _giftLabel(details) : '${details.totalPassengers} seat(s)',
+                        value: order.isGift ? _giftLabel(details) : '${details.totalPassengers} ${'seats_lower'.tr}',
                       ),
                     ),
                     Expanded(child: _Meta(icon: Icons.payments, value: _cost(details.cost))),
@@ -86,7 +87,7 @@ class HomeActiveOrderCard extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: () => Get.toNamed(AppRoutes.currentOrder),
                     icon: const Icon(Icons.navigation, size: 18),
-                    label: const Text('Track order'),
+                    label: Text('track_order'.tr),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.primary,
                       foregroundColor: Colors.white,
@@ -105,10 +106,10 @@ class HomeActiveOrderCard extends StatelessWidget {
     );
   }
 
-  static String _area(String value) => value.isEmpty ? '—' : value.replaceAll('_', ' ');
+  static String _area(String value) => areaLabel(value);
   static String _cost(String value) => value.isEmpty ? '—' : '$value JOD';
   static String _giftLabel(CurrentOrderDetails d) =>
-      d.recipientName.isNotEmpty ? d.recipientName : (d.giftType.isNotEmpty ? d.giftType : 'Gift');
+      d.recipientName.isNotEmpty ? d.recipientName : (d.giftType.isNotEmpty ? d.giftType : 'gift'.tr);
 }
 
 // An order reads as an "active ride" as soon as driver data is available, not
@@ -116,13 +117,13 @@ class HomeActiveOrderCard extends StatelessWidget {
 ({Color color, String label}) _rideState(CurrentOrderModel order) {
   switch (order.status) {
     case OrderStatus.CANCELLED:
-      return (color: AppColor.alert, label: 'Cancelled');
+      return (color: AppColor.alert, label: 'cancelled'.tr);
     case OrderStatus.COMPLETED:
-      return (color: AppColor.primary, label: 'Completed');
+      return (color: AppColor.primary, label: 'completed'.tr);
     default:
       return order.hasDriver
-          ? (color: AppColor.primary, label: 'Active ride')
-          : (color: AppColor.warning, label: 'Finding a driver');
+          ? (color: AppColor.primary, label: 'active_ride'.tr)
+          : (color: AppColor.warning, label: 'finding_a_driver'.tr);
   }
 }
 
@@ -141,7 +142,7 @@ class _TypeBadge extends StatelessWidget {
         children: [
           Icon(isGift ? Icons.card_giftcard : Icons.directions_car, size: 14, color: AppColor.primary),
           const SizedBox(width: 5),
-          Text(isGift ? 'Gift' : 'Ride', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColor.primary)),
+          Text(isGift ? 'gift'.tr : 'ride'.tr, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColor.primary)),
         ],
       ),
     );
@@ -214,7 +215,7 @@ class _DriverStrip extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                driver.name.isEmpty ? 'Your driver' : driver.name,
+                driver.name.isEmpty ? 'your_driver'.tr : driver.name,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColor.black),
               ),
               if (driver.vehicleLabel.isNotEmpty)
@@ -256,10 +257,10 @@ class _HoldingDriver extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('In holding', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColor.black)),
+              Text('in_holding'.tr, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColor.black)),
               const SizedBox(height: 2),
               Text(
-                hasTime ? 'Driver details available at $availableAt' : 'Driver details available soon',
+                hasTime ? '${'driver_details_available_at'.tr} $availableAt' : 'driver_details_available_soon'.tr,
                 style: const TextStyle(fontSize: 12, color: Colors.black54),
               ),
             ],

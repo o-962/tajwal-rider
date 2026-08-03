@@ -1,5 +1,7 @@
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:intl/intl.dart';
 import 'package:shared/utils/parsing.dart';
+import 'package:shared/utils/backend_date.dart';
 
 /// The backend's final calculation for a draft order, as returned by
 /// `POST /orders/passengers/summary` and `POST /orders/gifts/summary`.
@@ -93,8 +95,8 @@ class OrderSummaryDto {
     final code = json['discount_code'];
     return OrderSummaryDto(
       orderType: s(json['order_type']),
-      pickupArea: s(json['pickup_area']),
-      dropoffArea: s(json['dropoff_area']),
+      pickupArea: s(json['pickup_area']).tr,
+      dropoffArea: s(json['dropoff_area']).tr,
       scheduledAt: s(json['scheduled_at']),
       detailsAvailableAt: s(json['details_available_at']),
       passengers: passengers is Map
@@ -128,13 +130,7 @@ class OrderSummaryDto {
   }
 
   /// Formats a wire date string (ISO or a JS `Date.toString()`) for display.
-  static String _fmt(String raw) {
-    if (raw.isEmpty) return '—';
-    final dt = DateTime.tryParse(raw);
-    if (dt != null) return DateFormat('EEE, MMM d · h:mm a').format(dt.toLocal());
-    final gmt = raw.indexOf(' GMT');
-    return gmt > 0 ? raw.substring(0, gmt) : raw;
-  }
+  static String _fmt(String raw) => formatBackendDate(raw);
 }
 
 /// Copy for a backend discount verdict code (a MessagesEnum value).

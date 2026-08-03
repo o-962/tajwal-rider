@@ -4,6 +4,7 @@ import 'package:tajwal_rider/features/orders/order_summary/widgets/summary_card.
 import 'package:tajwal_rider/features/orders/order_summary/widgets/summary_row.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/dashed_divider.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
+import 'package:get/get.dart';
 
 /// The final calculation, straight from the backend. The discount line only
 /// appears once a code actually reduces the price — until discount codes are
@@ -16,12 +17,12 @@ class SummaryPriceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SummaryCard(
-      title: 'Payment',
+      title: 'payment'.tr,
       children: [
-        SummaryRow(label: 'Subtotal', value: summary.price(summary.baseCost)),
+        SummaryRow(label: 'subtotal'.tr, value: summary.price(summary.baseCost)),
         if (summary.hasDiscount)
           SummaryRow(
-            label: 'Discount',
+            label: 'discount'.tr,
             value: '- ${summary.price(summary.discountAmount)}',
           ),
         const Padding(
@@ -31,8 +32,8 @@ class SummaryPriceCard extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Total',
+            Text(
+              'total'.tr,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,

@@ -20,10 +20,16 @@ abstract class BaseCoordinatesScreen<T extends BaseCoordinatesController>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(title.tr)),
-      body: Obx(() {
-        return Stack(
-          children: [
-            GoogleMap(
+      body: Stack(
+        children: [
+          // Only the map's reactive inputs sit inside an Obx.
+          //
+          // The whole Stack used to be wrapped in one, so every marker or
+          // polygon change rebuilt the search field and the button too — which
+          // is what made the search box drop focus and clear itself mid-typing
+          // as soon as a tap landed on the map.
+          Obx(
+            () => GoogleMap(
               initialCameraPosition: const CameraPosition(
                 target: MapOptions.initialPosition,
                 zoom: MapOptions.cameraZoom,
@@ -35,14 +41,21 @@ abstract class BaseCoordinatesScreen<T extends BaseCoordinatesController>
               myLocationButtonEnabled: false,
               onTap: controller.handleMapTap,
             ),
+          ),
 
-            // ── Search bar ───────────────────────────────────────────
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+          // ── Search bar ───────────────────────────────────────────
+          //
+          // SafeArea: the bar was pinned to top:0 of the raw Stack, so on a
+          // notched device it sat under the status bar.
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
               child: LocationSearchWidget(
-                hintText: hintText,
+                // `.tr` — screens pass a KEY here ('search_pickup_location'),
+                // and without this the raw key was rendered as the placeholder.
+                hintText: hintText.tr,
                 textController: controller.textEditingController,
                 onLocTap: (title, lat, lng) {
                   FocusScope.of(context).unfocus();
@@ -50,12 +63,15 @@ abstract class BaseCoordinatesScreen<T extends BaseCoordinatesController>
                 },
               ),
             ),
+          ),
 
-            // ── Confirm button ───────────────────────────────────────
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
+          // ── Confirm button ───────────────────────────────────────
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              top: false,
               child: Obx(
                 () => buttonWidget(
                   text: buttonText,
@@ -64,9 +80,9 @@ abstract class BaseCoordinatesScreen<T extends BaseCoordinatesController>
                 ),
               ),
             ),
-          ],
-        );
-      }),
+          ),
+        ],
+      ),
     );
   }
 }

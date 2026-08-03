@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
+import 'package:get/get.dart';
 
 /// Shown when the rider has no past orders, and for load failures.
 class RiderHistoryEmpty extends StatelessWidget {
@@ -38,7 +39,7 @@ class RiderHistoryEmpty extends StatelessWidget {
                   side: const BorderSide(color: OrderTokens.primary),
                   shape: RoundedRectangleBorder(borderRadius: OrderTokens.rField),
                 ),
-                child: const Text('Try again'),
+                child: Text('try_again'.tr),
               ),
             ],
           ],

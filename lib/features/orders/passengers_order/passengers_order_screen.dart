@@ -8,6 +8,7 @@ import 'package:tajwal_rider/features/orders/passengers_order/widgets/estimated_
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/gender_preference_selector.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/info_note.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/location_picker_button.dart';
+import 'package:tajwal_rider/features/orders/passengers_order/widgets/route_swap_button.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/passenger_count_card.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/passenger_count_row.dart';
@@ -25,13 +26,13 @@ class PassengersOrderScreen extends StatelessWidget {
       backgroundColor: OrderTokens.page,
       appBar: AppBar(
         elevation: 0,
-        title: const Text('Passengers Order'),
+        title: Text('passengers_order'.tr),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
         children: [
           // ── Pickup & dropoff ───────────────────────────────────────────
-          const SectionLabel('Pickup & dropoff'),
+          SectionLabel('pickup_and_dropoff'.tr),
           const SizedBox(height: 6),
           Obx(
             () => LocationPickerButton(
@@ -40,7 +41,16 @@ class PassengersOrderScreen extends StatelessWidget {
               onTap: () => controller.openPickup(),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
+          // The only way to reverse a trip in place — each picker hides the
+          // other leg's area, so a return trip is otherwise unbuildable.
+          Obx(
+            () => RouteSwapButton(
+              enabled: controller.routeReady,
+              onTap: controller.swapRoute,
+            ),
+          ),
+          const SizedBox(height: 6),
           // Dropoff unlocks only once a pickup point is chosen.
           Obx(
             () => _gate(
@@ -71,7 +81,7 @@ class PassengersOrderScreen extends StatelessWidget {
           // ignores that preference when matching, so offering the choice would
           // be a promise the server doesn't keep.
           if (controller.showDriverGender) ...[
-            const SectionLabel('Preferred driver'),
+            SectionLabel('preferred_driver'.tr),
             const SizedBox(height: 6),
             Obx(
               () => _gate(
@@ -86,7 +96,7 @@ class PassengersOrderScreen extends StatelessWidget {
             const SizedBox(height: 14),
           ],
           if (controller.showCoPassengersGender) ...[
-            const SectionLabel('Preferred co-passengers'),
+            SectionLabel('preferred_co_passengers'.tr),
             const SizedBox(height: 6),
             Obx(
               () => _gate(
@@ -101,10 +111,7 @@ class PassengersOrderScreen extends StatelessWidget {
             const SizedBox(height: 14),
           ],
           if (controller.showDriverGender || controller.showCoPassengersGender) ...[
-            const InfoNote(
-              'You can only request the passengers\' own gender. '
-              'Mixed male & female seats ride with anyone.',
-            ),
+            InfoNote('gender_request_note'.tr),
             const SizedBox(height: 14),
           ],
 
@@ -113,10 +120,10 @@ class PassengersOrderScreen extends StatelessWidget {
             () => _gate(
               enabled: controller.routeReady,
               child: DepartureSlotButton(
-                title: 'Choose a departure slot',
+                title: 'choose_departure_slot'.tr,
                 subtitle: controller.hasSlot.value
-                    ? 'Departs at ${controller.slotLabel}'
-                    : 'Tap to pick a time slot',
+                    ? '${'departs_at'.tr} ${controller.slotLabel}'
+                    : 'tap_to_pick_time_slot'.tr,
                 onTap: _openSlotSheet,
               ),
             ),
@@ -136,7 +143,7 @@ class PassengersOrderScreen extends StatelessWidget {
             // is only created once the rider confirms the backend's figures.
             () => ConfirmOrderButton(
               enabled: controller.canConfirm,
-              label: 'Review order',
+              label: 'review_order'.tr,
               caption: controller.canConfirm ? null : _confirmHint(),
               onTap: controller.openSummary,
             ),
@@ -167,9 +174,9 @@ class PassengersOrderScreen extends StatelessWidget {
   }
 
   String _confirmHint() {
-    if (controller.rideCost == null) return 'Pick a pickup and dropoff to continue';
-    if (controller.totalSeats == 0) return 'Add at least one passenger to continue';
-    return 'Pick a departure slot to continue';
+    if (controller.rideCost == null) return 'pick_pickup_dropoff_to_continue'.tr;
+    if (controller.totalSeats == 0) return 'add_passenger_to_continue'.tr;
+    return 'pick_departure_slot_to_continue'.tr;
   }
 
   Widget _passengerCard() {
@@ -179,16 +186,16 @@ class PassengersOrderScreen extends StatelessWidget {
     return PassengerCountCard(
       rows: [
         PassengerCountRow(
-          title: 'Male passengers',
-          subtitle: '${controller.maleCost} JOD each',
+          title: 'male_passengers'.tr,
+          subtitle: '${controller.maleCost} ${'jod_each'.tr}',
           value: order.maleCount,
           onDecrement:
               order.maleCount > 0 ? () => controller.setMaleCount(order.maleCount - 1) : null,
           onIncrement: canAdd ? () => controller.setMaleCount(order.maleCount + 1) : null,
         ),
         PassengerCountRow(
-          title: 'Female passengers',
-          subtitle: '${controller.femaleCost} JOD each',
+          title: 'female_passengers'.tr,
+          subtitle: '${controller.femaleCost} ${'jod_each'.tr}',
           value: order.femaleCount,
           onDecrement:
               order.femaleCount > 0 ? () => controller.setFemaleCount(order.femaleCount - 1) : null,

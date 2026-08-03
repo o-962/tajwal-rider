@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/dashed_divider.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
+import 'package:get/get.dart';
 
 /// The dashed-topped summary row: "Estimated total · N seats" and the price.
 class EstimatedTotalBar extends StatelessWidget {
@@ -24,7 +25,7 @@ class EstimatedTotalBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Estimated total · $seats seats',
+                '${'estimated_total'.tr} · $seats ${'seats_lower'.tr}',
                 style: const TextStyle(fontSize: 14, color: OrderTokens.muted),
               ),
               Text(

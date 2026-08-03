@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/order_tokens.dart';
 import 'package:tajwal_rider/features/orders/passengers_order/widgets/section_label.dart';
+import 'package:get/get.dart';
 
 /// "SEATS" heading with the selected / max seat count.
 class SeatsHeader extends StatelessWidget {
@@ -18,7 +19,7 @@ class SeatsHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const SectionLabel('Seats'),
+        SectionLabel('seats'.tr),
         Text(
           '$selected / $max',
           style: const TextStyle(

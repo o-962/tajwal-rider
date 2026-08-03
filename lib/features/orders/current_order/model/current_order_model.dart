@@ -1,5 +1,5 @@
-import 'package:intl/intl.dart';
 import 'package:shared/shared/enums/order_status.dart';
+import 'package:shared/utils/backend_date.dart';
 import 'package:shared/utils/parsing.dart';
 
 /// Whether the rider's current order is a passenger ride or a gift delivery.
@@ -204,14 +204,7 @@ class CurrentOrderDetails {
   }
 
   /// Formats a wire date string (ISO or a JS `Date.toString()`) for display.
-  static String _fmt(String raw) {
-    if (raw.isEmpty) return '—';
-    final dt = DateTime.tryParse(raw);
-    if (dt != null) return DateFormat('EEE, MMM d · h:mm a').format(dt.toLocal());
-    // JS Date, e.g. "Sat Jul 04 2026 20:00:00 GMT+0300 (…)" — trim the tz tail.
-    final gmt = raw.indexOf(' GMT');
-    return gmt > 0 ? raw.substring(0, gmt) : raw;
-  }
+  static String _fmt(String raw) => formatBackendDate(raw);
 }
 
 double? _toNullableDouble(dynamic v) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared/shared/constants/colors.dart';
+import 'package:get/get.dart';
 
 /// Time-of-day greeting + the rider's first name + avatar.
 class HomeGreeting extends StatelessWidget {
@@ -9,10 +10,10 @@ class HomeGreeting extends StatelessWidget {
   Widget build(BuildContext context) {
     final hour = DateTime.now().hour;
     final greeting = hour < 12
-        ? 'Good morning'
+        ? 'good_morning'.tr
         : hour < 18
-            ? 'Good afternoon'
-            : 'Good evening';
+            ? 'good_afternoon'.tr
+            : 'good_evening'.tr;
 
     return Row(
       children: [
@@ -23,7 +24,7 @@ class HomeGreeting extends StatelessWidget {
               Text('$greeting 👋', style: const TextStyle(fontSize: 13, color: Colors.black54)),
               const SizedBox(height: 2),
               Text(
-                'Welcome',
+                'welcome'.tr,
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColor.black),
               ),
             ],

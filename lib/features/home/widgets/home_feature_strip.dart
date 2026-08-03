@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared/shared/constants/colors.dart';
+import 'package:get/get.dart';
 
 /// A simple 3-item strip highlighting what the app offers — keeps the empty
 /// (no active order) home from feeling bare.
@@ -8,11 +9,11 @@ class HomeFeatureStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Expanded(child: _Feature(icon: Icons.verified_user, label: 'Trusted\ndrivers')),
-        Expanded(child: _Feature(icon: Icons.map_outlined, label: 'City to\ncity')),
-        Expanded(child: _Feature(icon: Icons.card_giftcard, label: 'Send\ngifts')),
+        Expanded(child: _Feature(icon: Icons.verified_user, label: 'trusted_drivers'.tr)),
+        Expanded(child: _Feature(icon: Icons.map_outlined, label: 'city_to_city'.tr)),
+        Expanded(child: _Feature(icon: Icons.card_giftcard, label: 'send_gifts'.tr)),
       ],
     );
   }

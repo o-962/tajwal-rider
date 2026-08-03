@@ -22,8 +22,7 @@ class OrderSummaryScreen extends GetView<OrderSummaryController> {
     return Scaffold(
       backgroundColor: OrderTokens.page,
       appBar: AppBar(
-        title: const Text('Order summary'),
-        backgroundColor: OrderTokens.page,
+        title: Text('order_summary'.tr),
         surfaceTintColor: OrderTokens.page,
         elevation: 0,
       ),
@@ -66,9 +65,9 @@ class OrderSummaryScreen extends GetView<OrderSummaryController> {
                 child: ConfirmOrderButton(
                   enabled: controller.canConfirm,
                   label: controller.submitting.value
-                      ? 'Placing order…'
-                      : 'Confirm & place order',
-                  caption: 'You are charged ${summary.price(summary.totalCost)}',
+                      ? 'placing_order'.tr
+                      : 'confirm_and_place_order'.tr,
+                  caption: '${'you_are_charged'.tr} ${summary.price(summary.totalCost)}',
                   onTap: controller.confirm,
                 ),
               ),

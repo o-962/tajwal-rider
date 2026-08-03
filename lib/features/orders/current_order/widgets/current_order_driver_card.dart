@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared/shared/constants/colors.dart';
 import 'package:shared/utils/contact_utils.dart';
 import 'package:tajwal_rider/features/orders/current_order/model/current_order_model.dart';
+import 'package:get/get.dart';
 
 /// The assigned driver: name, car details, and quick call / WhatsApp actions.
 class CurrentOrderDriverCard extends StatelessWidget {
@@ -38,7 +39,7 @@ class CurrentOrderDriverCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      driver.name.isEmpty ? 'Your driver' : driver.name,
+                      driver.name.isEmpty ? 'your_driver'.tr : driver.name,
                       style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColor.black),
                     ),
                     if (driver.vehicleLabel.isNotEmpty) ...[
@@ -80,7 +81,7 @@ class CurrentOrderDriverCard extends StatelessWidget {
               Expanded(
                 child: _ActionButton(
                   icon: Icons.call,
-                  label: 'Call',
+                  label: 'call'.tr,
                   color: AppColor.primary,
                   onTap: hasPhone ? () => makePhoneCall(driver.phoneNumber) : null,
                 ),
@@ -89,7 +90,7 @@ class CurrentOrderDriverCard extends StatelessWidget {
               Expanded(
                 child: _ActionButton(
                   icon: Icons.chat,
-                  label: 'WhatsApp',
+                  label: 'whatsapp'.tr,
                   color: _whatsapp,
                   onTap: hasPhone ? () => openWhatsApp(driver.phoneNumber) : null,
                 ),

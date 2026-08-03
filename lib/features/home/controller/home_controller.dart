@@ -7,8 +7,8 @@ class HomeController extends GetxController {
     Widget screen,
     BottomNavigationBarItem item,
   })> items = [
-    (item: BottomNavigationBarItem(icon:  const Icon(Icons.home), label: 'Home'), screen: const Center(child: Text('Home Screen'))),
-    (item: BottomNavigationBarItem(icon:  const Icon(Icons.settings), label: 'Settings'), screen: const Center(child: Text('Settings Screen'))),
+    (item: BottomNavigationBarItem(icon:  Icon(Icons.home), label: 'home'.tr), screen: Center(child: Text('home_screen'.tr))),
+    (item: BottomNavigationBarItem(icon:  Icon(Icons.settings), label: 'settings'.tr), screen: Center(child: Text('settings_screen'.tr))),
   ];
   
 
